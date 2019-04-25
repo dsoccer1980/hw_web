@@ -19,7 +19,7 @@
     <br><br>
 
     <label>Автор:&nbsp;</label>
-    <select name="author_id" required>
+    <select name="author_id">
         <option disabled selected value="-1">Выберите автора</option>
         <option th:if="${book.author != null}" th:each="author: ${authors}" th:text="${author.name}"
                 th:value="${author.id}" th:selected="${book.author.id==author.id}"></option>
@@ -29,7 +29,7 @@
     <br><br><br>
 
     <label>Жанр:&nbsp;</label>
-    <select name="genre_id" required>
+    <select name="genre_id">
         <option disabled selected value="-1">Выберите жанр</option>
         <option th:if="${book.genre != null}" th:each="genre: ${genres}" th:text="${genre.name}" th:value="${genre.id}"
                 th:selected="${book.genre.id==genre.id}"></option>

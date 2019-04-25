@@ -45,18 +45,13 @@ public class BookController {
 
     @GetMapping("/book/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Book book = bookRepository.findById(id).orElseThrow(NotFoundExcepton::new);
+        Book book;
+        if (id.equals("-1")) {
+            book = new Book("Имя книги", new Author("Автор"), new Genre("Жанр"));
+        } else {
+            book = bookRepository.findById(id).orElseThrow(NotFoundExcepton::new);
+        }
         model.addAttribute("book", book);
-        List<Author> authors = authorRepository.findAll();
-        model.addAttribute("authors", authors);
-        List<Genre> genres = genreRepository.findAll();
-        model.addAttribute("genres", genres);
-        return "editBooks";
-    }
-
-    @GetMapping("/book/create")
-    public String create(Model model) {
-        model.addAttribute("book", new Book("Имя книги", new Author("Автор"), new Genre("Жанр")));
         List<Author> authors = authorRepository.findAll();
         model.addAttribute("authors", authors);
         List<Genre> genres = genreRepository.findAll();
@@ -66,15 +61,20 @@ public class BookController {
 
     @PostMapping(value = "/book/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String save(Book book, HttpServletRequest request) {
-        String authorId = request.getParameter("author_id");
-        Author author = authorRepository.findById(authorId).orElseThrow(NotFoundExcepton::new);
-        String genreId = request.getParameter("genre_id");
-        Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundExcepton::new);
         if (book.getId().equals("") || book.getId() == null) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
-        book.setAuthor(author);
-        book.setGenre(genre);
+        String authorId = request.getParameter("author_id");
+        if (authorId != null) {
+            Author author = authorRepository.findById(authorId).orElseThrow(NotFoundExcepton::new);
+            book.setAuthor(author);
+        }
+        String genreId = request.getParameter("genre_id");
+        if (genreId != null) {
+            Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundExcepton::new);
+            book.setGenre(genre);
+        }
+
         bookRepository.save(book);
         return "redirect:/book";
     }
