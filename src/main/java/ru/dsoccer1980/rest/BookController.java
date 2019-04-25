@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.domain.Genre;
-import ru.dsoccer1980.exception.NotFoundExcepton;
 import ru.dsoccer1980.repository.AuthorRepository;
 import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.repository.GenreRepository;
+import ru.dsoccer1980.util.exception.NotFoundExcepton;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

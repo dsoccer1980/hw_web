@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
-import ru.dsoccer1980.exception.NotFoundExcepton;
 import ru.dsoccer1980.repository.AuthorRepository;
+import ru.dsoccer1980.util.exception.NotFoundExcepton;
 
 import java.util.List;
 

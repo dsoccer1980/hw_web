@@ -3,39 +3,22 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Edit author</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        label {
-            display: inline-block;
-            width: 100px;
-        }
-
-        input:read-only {
-            background: lightgray;
-        }
-
-        .row {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
 
 
 <form action="/author/save" method="post">
-    <h1>Author Info:</h1>
+    <h2>Добавить/изменить автора:</h2>
 
     <input type="hidden" name="id" th:value="${author.id}"/>
 
-    <div class="row">
+    <div>
         <label>Name:&nbsp;</label>
         <input type="text" name="name" th:value="${author.name}"/>
     </div>
 
-    <div class="row">
+    <br>
+    <div>
         <button type="submit">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </div>

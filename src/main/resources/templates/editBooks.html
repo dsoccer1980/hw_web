@@ -3,39 +3,22 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Edit book</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        label {
-            display: inline-block;
-            width: 100px;
-        }
-
-        input:read-only {
-            background: lightgray;
-        }
-
-        .row {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
 
 
 <form action="/book/save" method="post">
-    <h1>Book Info:</h1>
+    <h2>Добавить/изменить книгу:</h2>
 
     <input type="hidden" name="id" th:value="${book.id}"/>
 
-    <div class="row">
-        <label>Name:&nbsp;</label>
+    <div>
+        <label>Название:&nbsp;</label>
         <input type="text" name="name" th:value="${book.name}"/>
     </div>
+    <br><br>
 
-
+    <label>Автор:&nbsp;</label>
     <select name="author_id" required>
         <option disabled selected value="-1">Выберите автора</option>
         <option th:if="${book.author != null}" th:each="author: ${authors}" th:text="${author.name}"
@@ -43,7 +26,9 @@
         <option th:unless="${book.author != null}" th:each="author: ${authors}" th:text="${author.name}"
                 th:value="${author.id}"></option>
     </select>
+    <br><br><br>
 
+    <label>Жанр:&nbsp;</label>
     <select name="genre_id" required>
         <option disabled selected value="-1">Выберите жанр</option>
         <option th:if="${book.genre != null}" th:each="genre: ${genres}" th:text="${genre.name}" th:value="${genre.id}"
@@ -52,8 +37,8 @@
                 th:value="${genre.id}"></option>
     </select>
 
-
-    <div class="row">
+    <br><br>
+    <div>
         <button type="submit">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </div>

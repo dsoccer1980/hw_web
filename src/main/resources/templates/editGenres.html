@@ -3,39 +3,22 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Edit genre</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        label {
-            display: inline-block;
-            width: 100px;
-        }
-
-        input:read-only {
-            background: lightgray;
-        }
-
-        .row {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
 
 
 <form action="/genre/save" method="post">
-    <h1>Genre Info:</h1>
+    <h2>Добавить/изменить жанр:</h2>
 
     <input type="hidden" name="id" th:value="${genre.id}"/>
 
-    <div class="row">
-        <label>Name:&nbsp;</label>
+    <div>
+        <label>Название:&nbsp;</label>
         <input type="text" name="name" th:value="${genre.name}"/>
     </div>
 
-    <div class="row">
+    <br>
+    <div>
         <button type="submit">Save</button>
         <button onclick="window.history.back()" type="button">Cancel</button>
     </div>

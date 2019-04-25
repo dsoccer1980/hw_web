@@ -1,4 +1,4 @@
-package ru.dsoccer1980.exception;
+package ru.dsoccer1980.util.exception;
 
 public class NotFoundExcepton extends RuntimeException {
 

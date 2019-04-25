@@ -1,4 +1,4 @@
-package ru.dsoccer1980.config;
+package ru.dsoccer1980.util.config;
 
 import com.github.cloudyrock.mongock.Mongock;
 import com.github.cloudyrock.mongock.SpringMongockBuilder;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationConfig {
 
-    private static final String CHANGELOGS_PACKAGE = "ru.dsoccer1980.changelogs";
+    private static final String CHANGELOGS_PACKAGE = "ru.dsoccer1980.util.changelogs";
 
     @Bean
     public Mongock mongock(MongoProps mongoProps, MongoClient mongoClient) {

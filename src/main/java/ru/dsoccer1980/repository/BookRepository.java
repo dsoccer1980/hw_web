@@ -6,7 +6,7 @@ import ru.dsoccer1980.domain.Book;
 import java.util.List;
 
 
-public interface BookRepository extends MongoRepository<Book, String> {
+public interface BookRepository extends MongoRepository<Book, String>, BookRepositoryCustom {
 
     List<Book> findByAuthorId(String id);
 

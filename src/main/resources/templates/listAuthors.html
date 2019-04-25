@@ -3,25 +3,16 @@
 <head>
     <meta charset="UTF-8"/>
     <title>List of all authors</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        .authors, .authors td {
-            border: 1px solid lightgray;
-            padding: 5px;
-        }
-    </style>
+    <link href="../static/style.css" th:href="@{/style.css}" rel="stylesheet"/>
 </head>
 <body>
-<h1>Authors:</h1>
+<h1>Авторы:</h1>
 
-<table class="authors">
+<table>
     <thead>
     <tr>
-        <th>Name</th>
-        <th rowspan="2">Action</th>
+        <th>Имя</th>
+        <th colspan="2"></th>
     </tr>
     </thead>
 
@@ -34,7 +25,9 @@
     </tbody>
 </table>
 <br><br>
-<a href="/author/create">Add new author</a>
+<a href="/author/create">Добавить нового автора</a>
+
+<footer th:insert="~{footer :: footer}"></footer>
 </body>
 </html>
 

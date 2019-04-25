@@ -1,4 +1,4 @@
-package ru.dsoccer1980.config;
+package ru.dsoccer1980.util.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

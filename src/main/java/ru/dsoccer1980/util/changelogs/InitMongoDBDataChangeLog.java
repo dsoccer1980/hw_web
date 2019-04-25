@@ -1,4 +1,4 @@
-package ru.dsoccer1980.changelogs;
+package ru.dsoccer1980.util.changelogs;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
@@ -11,14 +11,14 @@ import ru.dsoccer1980.domain.Genre;
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
 
-    private static final Author AUTHOR1 = new Author("1", "Стругацкий");
-    private static final Author AUTHOR2 = new Author("2", "Уэллс");
-    private static final Author AUTHOR3 = new Author("3", "Пушкин");
-    private static final Genre GENRE1 = new Genre("10", "Фантастика");
-    private static final Genre GENRE2 = new Genre("11", "Классика");
-    private static final Book BOOK1 = new Book("100", "Трудно быть Богом", AUTHOR1, GENRE1);
-    private static final Book BOOK2 = new Book("101", "Машина времени", AUTHOR2, GENRE1);
-    private static final Book BOOK3 = new Book("102", "Онегин", AUTHOR3, GENRE2);
+    private static final Author AUTHOR1 = new Author("100000000000000000000001", "Стругацкий");
+    private static final Author AUTHOR2 = new Author("100000000000000000000002", "Уэллс");
+    private static final Author AUTHOR3 = new Author("100000000000000000000003", "Пушкин");
+    private static final Genre GENRE1 = new Genre("100000000000000000000010", "Фантастика");
+    private static final Genre GENRE2 = new Genre("100000000000000000000011", "Классика");
+    private static final Book BOOK1 = new Book("100000000000000000000100", "Трудно быть Богом", AUTHOR1, GENRE1);
+    private static final Book BOOK2 = new Book("100000000000000000000101", "Машина времени", AUTHOR2, GENRE1);
+    private static final Book BOOK3 = new Book("100000000000000000000102", "Онегин", AUTHOR3, GENRE2);
     private Author springDataAuthor;
     private Genre springDataGenre;
     private Book springDataBook;
