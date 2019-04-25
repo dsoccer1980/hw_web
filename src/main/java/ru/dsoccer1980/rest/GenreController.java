@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Genre;
 import ru.dsoccer1980.repository.GenreRepository;
-import ru.dsoccer1980.util.exception.NotFoundExcepton;
+import ru.dsoccer1980.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class GenreController {
 
     @GetMapping("/genre/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Genre genre = genreRepository.findById(id).orElseThrow(NotFoundExcepton::new);
+        Genre genre = genreRepository.findById(id).orElseThrow(NotFoundException::new);
         model.addAttribute("genre", genre);
         return "editGenres";
     }

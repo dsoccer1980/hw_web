@@ -13,7 +13,7 @@ import ru.dsoccer1980.domain.Genre;
 import ru.dsoccer1980.repository.AuthorRepository;
 import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.repository.GenreRepository;
-import ru.dsoccer1980.util.exception.NotFoundExcepton;
+import ru.dsoccer1980.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -49,7 +49,7 @@ public class BookController {
         if (id.equals("-1")) {
             book = new Book("Имя книги", new Author("Автор"), new Genre("Жанр"));
         } else {
-            book = bookRepository.findById(id).orElseThrow(NotFoundExcepton::new);
+            book = bookRepository.findById(id).orElseThrow(NotFoundException::new);
         }
         model.addAttribute("book", book);
         List<Author> authors = authorRepository.findAll();
@@ -66,12 +66,12 @@ public class BookController {
         }
         String authorId = request.getParameter("author_id");
         if (authorId != null) {
-            Author author = authorRepository.findById(authorId).orElseThrow(NotFoundExcepton::new);
+            Author author = authorRepository.findById(authorId).orElseThrow(NotFoundException::new);
             book.setAuthor(author);
         }
         String genreId = request.getParameter("genre_id");
         if (genreId != null) {
-            Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundExcepton::new);
+            Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundException::new);
             book.setGenre(genre);
         }
 

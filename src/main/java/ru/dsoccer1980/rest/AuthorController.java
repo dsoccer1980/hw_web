@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.repository.AuthorRepository;
-import ru.dsoccer1980.util.exception.NotFoundExcepton;
+import ru.dsoccer1980.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class AuthorController {
 
     @GetMapping("/author/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Author author = authorRepository.findById(id).orElseThrow(NotFoundExcepton::new);
+        Author author = authorRepository.findById(id).orElseThrow(NotFoundException::new);
         model.addAttribute("author", author);
         return "editAuthors";
     }
