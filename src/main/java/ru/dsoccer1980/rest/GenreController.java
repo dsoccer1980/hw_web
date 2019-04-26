@@ -1,5 +1,6 @@
 package ru.dsoccer1980.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,30 +8,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Genre;
-import ru.dsoccer1980.repository.GenreRepository;
-import ru.dsoccer1980.util.exception.NotFoundException;
+import ru.dsoccer1980.service.GenreService;
 
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class GenreController {
 
-    private final GenreRepository genreRepository;
+    private final GenreService genreService;
 
-    public GenreController(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
 
     @GetMapping("/genre")
     public String getAll(Model model) {
-        List<Genre> genres = genreRepository.findAll();
+        List<Genre> genres = genreService.getAll();
         model.addAttribute("genres", genres);
         return "listGenres";
     }
 
     @GetMapping("/genre/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Genre genre = genreRepository.findById(id).orElseThrow(NotFoundException::new);
+        Genre genre = genreService.get(id);
         model.addAttribute("genre", genre);
         return "editGenres";
     }
@@ -43,16 +41,13 @@ public class GenreController {
 
     @PostMapping(value = "/genre/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String save(Genre genre) {
-        if (genre.getId().equals("") || genre.getId() == null) {
-            genre = new Genre(genre.getName());
-        }
-        genreRepository.save(genre);
+        genreService.save(genre);
         return "redirect:/genre";
     }
 
     @PostMapping("/genre/delete")
     public String delete(@RequestParam("id") String id) {
-        genreRepository.deleteById(id);
+        genreService.delete(id);
         return "redirect:/genre";
     }
 }

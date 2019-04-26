@@ -1,5 +1,6 @@
 package ru.dsoccer1980.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,30 +8,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
-import ru.dsoccer1980.repository.AuthorRepository;
-import ru.dsoccer1980.util.exception.NotFoundException;
+import ru.dsoccer1980.service.AuthorService;
 
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class AuthorController {
 
-    private final AuthorRepository authorRepository;
-
-    public AuthorController(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
+    private final AuthorService authorService;
 
     @GetMapping("/author")
     public String getAll(Model model) {
-        List<Author> authors = authorRepository.findAll();
+        List<Author> authors = authorService.getAll();
         model.addAttribute("authors", authors);
         return "listAuthors";
     }
 
     @GetMapping("/author/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Author author = authorRepository.findById(id).orElseThrow(NotFoundException::new);
+        Author author = authorService.get(id);
         model.addAttribute("author", author);
         return "editAuthors";
     }
@@ -43,16 +40,13 @@ public class AuthorController {
 
     @PostMapping(value = "/author/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String save(Author author) {
-        if (author.getId().equals("") || author.getId() == null) {
-            author = new Author(author.getName());
-        }
-        authorRepository.save(author);
+        authorService.save(author);
         return "redirect:/author";
     }
 
     @PostMapping("/author/delete")
     public String delete(@RequestParam("id") String id) {
-        authorRepository.deleteById(id);
+        authorService.delete(id);
         return "redirect:/author";
     }
 }
