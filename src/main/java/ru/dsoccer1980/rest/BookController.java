@@ -15,7 +15,6 @@ import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.repository.GenreRepository;
 import ru.dsoccer1980.util.exception.NotFoundException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -60,16 +59,16 @@ public class BookController {
     }
 
     @PostMapping(value = "/book/save", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String save(Book book, HttpServletRequest request) {
+    public String save(Book book,
+                       @RequestParam(value = "author_id", required = false) String authorId,
+                       @RequestParam(value = "genre_id", required = false) String genreId) {
         if (book.getId().equals("") || book.getId() == null) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
-        String authorId = request.getParameter("author_id");
         if (authorId != null) {
             Author author = authorRepository.findById(authorId).orElseThrow(NotFoundException::new);
             book.setAuthor(author);
         }
-        String genreId = request.getParameter("genre_id");
         if (genreId != null) {
             Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundException::new);
             book.setGenre(genre);
