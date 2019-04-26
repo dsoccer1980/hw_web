@@ -20,14 +20,19 @@
     <tr th:each="genre: ${genres}">
         <td th:text="${genre.name}">Genre name</td>
         <td><a href="editAuthors.html" th:href="@{/genre/edit(id=${genre.id})}">Edit</a></td>
-        <td><a href="editAuthors.html" th:href="@{'/genre/delete/' + ${genre.id}}">Delete</a></td>
+        <td>
+            <form th:action="@{/genre/delete/}" method="post">
+                <input type="hidden" name="id" th:value="${genre.id}"/>
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
 <br><br>
 <a href="/genre/create">Добавить новый жанр</a>
 
-<footer th:insert="~{footer :: footer}"> </footer>
+<footer th:insert="~{footer :: footer}"></footer>
 </body>
 </html>
 

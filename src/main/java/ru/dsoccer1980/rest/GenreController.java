@@ -4,7 +4,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Genre;
@@ -51,8 +50,8 @@ public class GenreController {
         return "redirect:/genre";
     }
 
-    @GetMapping("/genre/delete/{id}")
-    public String delete(@PathVariable("id") String id) {
+    @PostMapping("/genre/delete")
+    public String delete(@RequestParam("id") String id) {
         genreRepository.deleteById(id);
         return "redirect:/genre";
     }

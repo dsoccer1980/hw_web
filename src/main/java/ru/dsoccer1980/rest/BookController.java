@@ -4,7 +4,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
@@ -78,8 +77,8 @@ public class BookController {
         return "redirect:/book";
     }
 
-    @GetMapping("/book/delete/{id}")
-    public String delete(@PathVariable("id") String id) {
+    @PostMapping("/book/delete")
+    public String delete(@RequestParam("id") String id) {
         bookRepository.deleteById(id);
         return "redirect:/book";
     }

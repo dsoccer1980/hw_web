@@ -25,7 +25,13 @@
         <td th:text="${book.author != null} ? ${book.author.name}">Author name</td>
         <td th:text="${book.genre != null} ? ${book.genre.name}">Genre name</td>
         <td><a href="editBooks.html" th:href="@{/book/edit(id=${book.id})}">Edit</a></td>
-        <td><a href="editBooks.html" th:href="@{'/book/delete/' + ${book.id}}">Delete</a></td>
+        <td>
+            <form th:action="@{/book/delete/}" method="post">
+                <input type="hidden" name="id" th:value="${book.id}"/>
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
+
     </tr>
     </tbody>
 </table>
@@ -35,7 +41,7 @@
 <br><br>
 
 
-<footer th:insert="~{footer :: footer}"> </footer>
+<footer th:insert="~{footer :: footer}"></footer>
 
 </body>
 </html>
