@@ -1,4 +1,4 @@
-package ru.dsoccer1980.rest;
+package ru.dsoccer1980.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
