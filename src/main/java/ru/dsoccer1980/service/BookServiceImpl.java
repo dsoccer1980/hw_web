@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void save(Book book, String authorId, String genreId) {
-        if (book.getId().equals("") || book.getId() == null) {
+        if (book.getId() == null || book.getId().equals("")) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
         if (authorId != null) {
