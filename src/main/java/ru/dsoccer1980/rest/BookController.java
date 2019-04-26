@@ -1,5 +1,6 @@
 package ru.dsoccer1980.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,25 +10,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.domain.Genre;
-import ru.dsoccer1980.repository.AuthorRepository;
-import ru.dsoccer1980.repository.BookRepository;
-import ru.dsoccer1980.repository.GenreRepository;
-import ru.dsoccer1980.util.exception.NotFoundException;
+import ru.dsoccer1980.service.AuthorService;
+import ru.dsoccer1980.service.BookService;
+import ru.dsoccer1980.service.GenreService;
 
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class BookController {
 
-    private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
-    private final GenreRepository genreRepository;
+    private final BookService bookService;
+    private final AuthorService authorService;
+    private final GenreService genreService;
 
-    public BookController(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.genreRepository = genreRepository;
-    }
 
     @GetMapping("/")
     public String root(Model model) {
@@ -36,23 +32,18 @@ public class BookController {
 
     @GetMapping("/book")
     public String getAll(Model model) {
-        List<Book> books = bookRepository.findAll();
+        List<Book> books = bookService.getAll();
         model.addAttribute("books", books);
         return "listBooks";
     }
 
     @GetMapping("/book/edit")
     public String edit(@RequestParam("id") String id, Model model) {
-        Book book;
-        if (id.equals("-1")) {
-            book = new Book("Имя книги", new Author("Автор"), new Genre("Жанр"));
-        } else {
-            book = bookRepository.findById(id).orElseThrow(NotFoundException::new);
-        }
+        Book book = bookService.get(id);
         model.addAttribute("book", book);
-        List<Author> authors = authorRepository.findAll();
+        List<Author> authors = authorService.getAll();
         model.addAttribute("authors", authors);
-        List<Genre> genres = genreRepository.findAll();
+        List<Genre> genres = genreService.getAll();
         model.addAttribute("genres", genres);
         return "editBooks";
     }
@@ -61,25 +52,14 @@ public class BookController {
     public String save(Book book,
                        @RequestParam(value = "author_id", required = false) String authorId,
                        @RequestParam(value = "genre_id", required = false) String genreId) {
-        if (book.getId().equals("") || book.getId() == null) {
-            book = new Book(book.getName(), book.getAuthor(), book.getGenre());
-        }
-        if (authorId != null) {
-            Author author = authorRepository.findById(authorId).orElseThrow(NotFoundException::new);
-            book.setAuthor(author);
-        }
-        if (genreId != null) {
-            Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundException::new);
-            book.setGenre(genre);
-        }
 
-        bookRepository.save(book);
+        bookService.save(book, authorId, genreId);
         return "redirect:/book";
     }
 
     @PostMapping("/book/delete")
     public String delete(@RequestParam("id") String id) {
-        bookRepository.deleteById(id);
+        bookService.delete(id);
         return "redirect:/book";
     }
 }

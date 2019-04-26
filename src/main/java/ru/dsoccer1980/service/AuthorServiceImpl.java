@@ -14,14 +14,17 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
+    @Override
     public List<Author> getAll() {
         return authorRepository.findAll();
     }
 
+    @Override
     public Author get(String id) {
         return authorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    @Override
     public void save(Author author) {
         if (author.getId().equals("") || author.getId() == null) {
             author = new Author(author.getName());
@@ -29,6 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.save(author);
     }
 
+    @Override
     public void delete(String id) {
         authorRepository.deleteById(id);
     }
