@@ -15,3 +15,11 @@ table {
 table th {
     background-color: #eee;
 }
+
+.button-link {
+background: none;
+border: none;
+color: blue;
+text-decoration: underline;
+cursor: pointer;
+}
