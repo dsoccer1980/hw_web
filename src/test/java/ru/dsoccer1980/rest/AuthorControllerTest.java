@@ -1,4 +1,4 @@
-package ru.dsoccer1980.web;
+package ru.dsoccer1980.rest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.dsoccer1980.domain.Genre;
-import ru.dsoccer1980.service.GenreService;
+import ru.dsoccer1980.domain.Author;
+import ru.dsoccer1980.service.AuthorService;
 
 import java.util.List;
 
@@ -19,22 +19,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(GenreController.class)
-public class GenreControllerTest {
+@WebMvcTest(AuthorController.class)
+public class AuthorControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private GenreService genreService;
+    private AuthorService authorService;
 
     @Test
     void test() throws Exception {
-        given(genreService.getAll())
-                .willReturn(List.of(new Genre("Фантастика")));
+        given(authorService.getAll())
+                .willReturn(List.of(new Author("Стругацкий")));
 
-        mvc.perform(get("/genre"))
+        mvc.perform(get("/author"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Фантастика")));
+                .andExpect(content().string(containsString("Стругацкий")));
     }
 }

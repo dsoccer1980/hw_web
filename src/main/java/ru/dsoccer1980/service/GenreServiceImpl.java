@@ -25,16 +25,21 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void save(Genre genre) {
+    public Genre save(Genre genre) {
         if (genre.getId() == null || genre.getId().equals("")) {
             genre = new Genre(genre.getName());
         }
-        genreRepository.save(genre);
+        return genreRepository.save(genre);
     }
 
     @Override
     public void delete(String id) {
         genreRepository.deleteById(id);
+    }
+
+    @Override
+    public Genre getById(String id) {
+        return genreRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
 }

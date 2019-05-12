@@ -37,20 +37,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void save(Book book, String authorId, String genreId) {
+    public Book save(Book book, String authorId, String genreId) {
         if (book.getId() == null || book.getId().equals("")) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
-        if (authorId != null) {
+        if (authorId != null && !authorId.isEmpty()) {
             Author author = authorRepository.findById(authorId).orElseThrow(NotFoundException::new);
             book.setAuthor(author);
         }
-        if (genreId != null) {
+        if (genreId != null && !genreId.isEmpty()) {
             Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundException::new);
             book.setGenre(genre);
         }
 
-        bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     @Override
