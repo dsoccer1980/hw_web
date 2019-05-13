@@ -1,0 +1,25 @@
+body {
+    padding: 50px;
+}
+
+table, table td, table th {
+    border: 1px solid black;
+    padding: 0;
+}
+
+table {
+    width: 50%;
+    border-spacing: 0;
+}
+
+table th {
+    background-color: #eee;
+}
+
+.button-link {
+background: none;
+border: none;
+color: blue;
+text-decoration: underline;
+cursor: pointer;
+}

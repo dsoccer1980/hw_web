@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all authors</title>
+    <link href="../static/style.css" th:href="@{/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<h1>Авторы:</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th colspan="2"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="author: ${authors}">
+        <td th:text="${author.name}">Author name</td>
+        <td><a href="editAuthors.html" th:href="@{/author/edit(id=${author.id})}">Edit</a></td>
+        <td>
+            <form th:action="@{/author/delete/}" method="post">
+                <input type="hidden" name="id" th:value="${author.id}"/>
+                <input type="submit" value="Delete" class="button-link"/>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br><br>
+<a href="/author/create">Добавить нового автора</a>
+
+<footer th:insert="~{footer :: footer}"></footer>
+</body>
+</html>
+
