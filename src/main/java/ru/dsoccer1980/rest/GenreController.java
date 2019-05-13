@@ -8,7 +8,6 @@ import ru.dsoccer1980.service.GenreService;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class GenreController {
@@ -44,5 +43,4 @@ public class GenreController {
     public void delete(@RequestParam("id") String id) {
         genreService.delete(id);
     }
-
 }

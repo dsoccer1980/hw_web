@@ -11,7 +11,6 @@ import ru.dsoccer1980.util.exception.NotFoundException;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 public class BookController {
