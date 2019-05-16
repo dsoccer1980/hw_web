@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.dsoccer1980.domain.Genre;
 import ru.dsoccer1980.service.GenreService;
+import ru.dsoccer1980.web.rest.GenreController;
 
 import java.util.List;
 

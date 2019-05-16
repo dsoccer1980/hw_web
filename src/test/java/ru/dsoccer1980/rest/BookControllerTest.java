@@ -12,6 +12,7 @@ import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.service.AuthorService;
 import ru.dsoccer1980.service.BookService;
 import ru.dsoccer1980.service.GenreService;
+import ru.dsoccer1980.web.rest.BookController;
 
 import java.util.List;
 

@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.service.AuthorService;
+import ru.dsoccer1980.web.rest.AuthorController;
 
 import java.util.List;
 
