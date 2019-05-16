@@ -2,15 +2,14 @@ package ru.dsoccer1980.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.domain.Genre;
 import ru.dsoccer1980.repository.AuthorRepository;
 import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.repository.GenreRepository;
-import ru.dsoccer1980.util.exception.NotFoundException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,41 +20,37 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     @Override
-    public List<Book> getAll() {
+    public Flux<Book> getAll() {
         return bookRepository.findAll();
     }
 
     @Override
-    public Book get(String id) {
-        Book book;
-        if (id.equals("-1")) {
-            book = new Book("Имя книги", new Author("Автор"), new Genre("Жанр"));
-        } else {
-            book = bookRepository.findById(id).orElseThrow(NotFoundException::new);
-        }
-        return book;
+    public Mono<Book> get(String id) {
+        return bookRepository.findById(id);
     }
 
     @Override
-    public Book save(Book book, String authorId, String genreId) {
+    public Mono<Book> save(Book book, String authorId, String genreId) {
         if (book.getId() == null || book.getId().equals("")) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
         if (authorId != null && !authorId.isEmpty()) {
-            Author author = authorRepository.findById(authorId).orElseThrow(NotFoundException::new);
-            book.setAuthor(author);
+            Mono<Author> author = authorRepository.findById(authorId);
+            //TODO
+            book.setAuthor(author.block());
         }
         if (genreId != null && !genreId.isEmpty()) {
-            Genre genre = genreRepository.findById(genreId).orElseThrow(NotFoundException::new);
-            book.setGenre(genre);
+            Mono<Genre> genre = genreRepository.findById(genreId);
+            //TODO
+            book.setGenre(genre.block());
         }
 
         return bookRepository.save(book);
     }
 
     @Override
-    public void delete(String id) {
-        bookRepository.deleteById(id);
+    public Mono<Void> delete(String id) {
+        return bookRepository.deleteById(id);
     }
 }
 

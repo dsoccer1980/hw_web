@@ -2,11 +2,10 @@ package ru.dsoccer1980.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.repository.AuthorRepository;
-import ru.dsoccer1980.util.exception.NotFoundException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +14,17 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    public List<Author> getAll() {
+    public Flux<Author> getAll() {
         return authorRepository.findAll();
     }
 
     @Override
-    public Author get(String id) {
-        return authorRepository.findById(id).orElseThrow(NotFoundException::new);
+    public Mono<Author> get(String id) {
+        return authorRepository.findById(id);
     }
 
     @Override
-    public Author save(Author author) {
+    public Mono<Author> save(Author author) {
         if (author.getId() == null || author.getId().equals("")) {
             author = new Author(author.getName());
         }
@@ -33,13 +32,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void delete(String id) {
-        authorRepository.deleteById(id);
+    public Mono<Void> delete(String id) {
+        return authorRepository.deleteById(id);
     }
 
     @Override
-    public Author getById(String id) {
-        return authorRepository.findById(id).orElseThrow(NotFoundException::new);
+    public Mono<Author> getById(String id) {
+        return authorRepository.findById(id);
     }
 
 }

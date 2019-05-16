@@ -1,18 +1,18 @@
 package ru.dsoccer1980.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Author;
-
-import java.util.List;
 
 public interface AuthorService {
 
-    List<Author> getAll();
+    Flux<Author> getAll();
 
-    Author get(String id);
+    Mono<Author> get(String id);
 
-    Author save(Author author);
+    Mono<Author> save(Author author);
 
-    void delete(String id);
+    Mono<Void> delete(String id);
 
-    Author getById(String id);
+    Mono<Author> getById(String id);
 }

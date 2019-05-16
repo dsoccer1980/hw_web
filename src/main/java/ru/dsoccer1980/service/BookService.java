@@ -1,16 +1,16 @@
 package ru.dsoccer1980.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Book;
-
-import java.util.List;
 
 public interface BookService {
 
-    List<Book> getAll();
+    Flux<Book> getAll();
 
-    Book get(String id);
+    Mono<Book> get(String id);
 
-    Book save(Book book, String authorId, String genreId);
+    Mono<Book> save(Book book, String authorId, String genreId);
 
-    void delete(String id);
+    Mono<Void> delete(String id);
 }
