@@ -10,8 +10,9 @@ public interface AuthorService {
 
     Author get(String id);
 
-    void save(Author author);
+    Author save(Author author);
 
     void delete(String id);
 
+    Author getById(String id);
 }

@@ -10,8 +10,10 @@ public interface GenreService {
 
     Genre get(String id);
 
-    void save(Genre genre);
+    Genre save(Genre genre);
 
     void delete(String id);
+
+    Genre getById(String id);
 
 }

@@ -1,4 +1,4 @@
-package ru.dsoccer1980.web;
+package ru.dsoccer1980.rest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.service.AuthorService;
+import ru.dsoccer1980.web.rest.AuthorController;
 
 import java.util.List;
 

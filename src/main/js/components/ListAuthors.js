@@ -1,0 +1,54 @@
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import TableRowAuthors from './TableRowAuthors'
+
+export default class ListAuthors extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { authors: [] };
+  }
+
+  componentDidMount() {
+    fetch("/author")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({ authors: result })
+        },
+        (error) => {
+          this.setState({ error });
+        }
+      )
+  }
+
+  tabRow() {
+    return this.state.authors.map(function (object, i) {
+      return <TableRowAuthors obj={object} key={i} />;
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h3 align="center">Authors List</h3>
+        <table className="table table-striped" style={{ marginTop: 20 }}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th colSpan="2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.tabRow()}
+          </tbody>
+        </table>
+        <div>
+          <Link to={'/createAuthor'} className="nav-link">
+            <button className="btn btn-primary">Create</button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+}

@@ -25,16 +25,21 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void save(Author author) {
+    public Author save(Author author) {
         if (author.getId() == null || author.getId().equals("")) {
             author = new Author(author.getName());
         }
-        authorRepository.save(author);
+        return authorRepository.save(author);
     }
 
     @Override
     public void delete(String id) {
         authorRepository.deleteById(id);
+    }
+
+    @Override
+    public Author getById(String id) {
+        return authorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
 }

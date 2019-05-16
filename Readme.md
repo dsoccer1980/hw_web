@@ -1,6 +1,5 @@
 # CRUD приложение
 
 CRUD приложение с Web UI и хранением данных в БД. <br>
-Использовать классический View, предусмотреть страницу отображения всех сущностей и создания/редактирования.
-<br>
-View на Thymeleaf, classic Controllers.
+Backend - REST-API <br>
+FrontEnd - React
