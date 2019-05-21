@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
             });
         }
 
-        return bookRepository.save(bookMono.block());
+        return bookRepository.save(bookMono.blockOptional().orElseThrow());
     }
 
     @Override
