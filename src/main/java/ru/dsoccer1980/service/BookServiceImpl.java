@@ -34,18 +34,25 @@ public class BookServiceImpl implements BookService {
         if (book.getId() == null || book.getId().equals("")) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
+
+        Mono<Book> bookMono = Mono.just(book);
+
         if (authorId != null && !authorId.isEmpty()) {
             Mono<Author> author = authorRepository.findById(authorId);
-            //TODO
-            book.setAuthor(author.block());
+            bookMono = bookMono.zipWith(author, (b, a) -> {
+                b.setAuthor(a);
+                return b;
+            });
         }
         if (genreId != null && !genreId.isEmpty()) {
             Mono<Genre> genre = genreRepository.findById(genreId);
-            //TODO
-            book.setGenre(genre.block());
+            bookMono = bookMono.zipWith(genre, (b, g) -> {
+                b.setGenre(g);
+                return b;
+            });
         }
 
-        return bookRepository.save(book);
+        return bookRepository.save(bookMono.block());
     }
 
     @Override
