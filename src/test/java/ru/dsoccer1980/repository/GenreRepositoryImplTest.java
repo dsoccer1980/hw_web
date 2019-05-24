@@ -3,6 +3,7 @@ package ru.dsoccer1980.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -17,13 +18,16 @@ import static ru.dsoccer1980.TestData.GENRE2;
 public class GenreRepositoryImplTest extends AbstractRepositoryTest {
 
     @Autowired
+    MongoOperations mongoOperations;
+
+    @Autowired
     private GenreRepository genreRepository;
 
     @BeforeEach
     void populateData() {
-        genreRepository.deleteAll().block();
-        genreRepository.save(GENRE1).block();
-        genreRepository.save(GENRE2).block();
+        mongoOperations.dropCollection(Genre.class);
+        mongoOperations.save(GENRE1);
+        mongoOperations.save(GENRE2);
     }
 
     @Test
