@@ -57,7 +57,7 @@ export default class CreateBook extends Component {
             authorId: this.state.authorId,
             genreId: this.state.genreId
         };
-        fetch('/book/save', {
+        fetch('/book', {
             method: 'post',
             headers: {
                 'Accept': 'application/json, text/plain, */*',

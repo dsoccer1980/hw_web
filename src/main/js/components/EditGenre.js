@@ -15,7 +15,7 @@ export default class EditGenre extends Component {
     }
 
     componentDidMount() {
-        fetch("/genre/edit/" + this.props.match.params.id)
+        fetch("/genre/" + this.props.match.params.id)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -47,7 +47,7 @@ export default class EditGenre extends Component {
             id: this.state.id,
             name: this.state.name,
         };
-        fetch('/genre/save', {
+        fetch('/genre', {
             method: 'put',
             headers: {
                 'Accept': 'application/json, text/plain, */*',

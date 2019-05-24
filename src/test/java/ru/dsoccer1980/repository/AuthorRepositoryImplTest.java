@@ -4,86 +4,125 @@ package ru.dsoccer1980.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Author;
-import ru.dsoccer1980.util.exception.NotFoundException;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.dsoccer1980.TestData.*;
 
 
 public class AuthorRepositoryImplTest extends AbstractRepositoryTest {
 
     @Autowired
+    MongoOperations mongoOperations;
+
+    @Autowired
     private AuthorRepository authorRepository;
 
     @BeforeEach
     void populate() {
-        authorRepository.deleteAll();
-        authorRepository.save(AUTHOR1);
-        authorRepository.save(AUTHOR2);
-        authorRepository.save(AUTHOR3);
+        mongoOperations.dropCollection(Author.class);
+        mongoOperations.save(AUTHOR1);
+        mongoOperations.save(AUTHOR2);
+        mongoOperations.save(AUTHOR3);
     }
 
     @Test
     void findAll() {
-        assertThat(authorRepository.findAll().toString()).isEqualTo(Arrays.asList(AUTHOR1, AUTHOR2, AUTHOR3).toString());
+        Flux<Author> all = authorRepository.findAll();
+        StepVerifier
+                .create(all)
+                .assertNext(author -> assertNotNull(author.getId()))
+                .assertNext(author -> assertNotNull(author.getId()))
+                .assertNext(author -> assertNotNull(author.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void findById() {
-        Author author = authorRepository.findById(AUTHOR2.getId()).orElseThrow(() -> new NotFoundException("Author not found"));
-        assertThat(author.getId()).isEqualTo(AUTHOR2.getId());
+        Mono<Author> authorById = authorRepository.findById(AUTHOR2.getId());
+        StepVerifier
+                .create(authorById)
+                .assertNext(author -> assertThat(author.getId()).isEqualTo(AUTHOR2.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void getByWrongId() {
-        assertThrows(NotFoundException.class, () -> authorRepository.findById("-1").orElseThrow(() -> new NotFoundException("Author not found")));
+        Mono<Author> authorById = authorRepository.findById("-1");
+        StepVerifier
+                .create(authorById)
+                .verifyComplete();
     }
 
     @Test
     void save() {
-        int sizeBeforeInsert = authorRepository.findAll().size();
-        authorRepository.save(NEW_AUTHOR);
-        Author newAuthor = authorRepository.findById(NEW_AUTHOR.getId()).orElseThrow(() -> new NotFoundException("Author not found"));
-        assertThat(newAuthor.getId()).isEqualTo(NEW_AUTHOR.getId());
-        assertThat(authorRepository.findAll().size()).isEqualTo(sizeBeforeInsert + 1);
+        Mono<Author> authorMono = authorRepository.save(new Author("New author"));
+        StepVerifier
+                .create(authorMono)
+                .assertNext(author -> assertNotNull(author.getId()))
+                .expectComplete()
+                .verify();
     }
+
 
     @Test
     void saveExistAuthor() {
-        int sizeBeforeInsert = authorRepository.findAll().size();
-        authorRepository.save(AUTHOR1);
-        Author getAuthor = authorRepository.findById(AUTHOR1.getId()).orElseThrow(() -> new NotFoundException("Author not found"));
-        assertThat(getAuthor.getId()).isEqualTo(AUTHOR1.getId());
-        assertThat(authorRepository.findAll().size()).isEqualTo(sizeBeforeInsert);
+        long sizeBeforeSave = authorRepository.findAll().toStream().count();
+        Mono<Author> authorMono = authorRepository.save(AUTHOR1);
+        StepVerifier
+                .create(authorMono)
+                .assertNext(author -> assertNotNull(author.getId()))
+                .expectComplete()
+                .verify();
+
+        assertThat(authorRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave);
     }
 
     @Test
     void deleteById() {
-        int sizeBeforeDelete = authorRepository.findAll().size();
-        authorRepository.deleteById(AUTHOR2.getId());
-        assertThat(authorRepository.findAll().size()).isEqualTo(sizeBeforeDelete - 1);
+        long sizeBeforeSave = authorRepository.findAll().toStream().count();
+        Mono<Void> deleteById = authorRepository.deleteById(AUTHOR2.getId());
+        StepVerifier
+                .create(deleteById)
+                .verifyComplete();
+
+        assertThat(authorRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave - 1);
     }
 
     @Test
     void deleteByWrongId() {
-        int sizeBeforeDelete = authorRepository.findAll().size();
-        authorRepository.deleteById("123456789012345678901234");
-        assertThat(authorRepository.findAll().size()).isEqualTo(sizeBeforeDelete);
+        long sizeBeforeSave = authorRepository.findAll().toStream().count();
+        Mono<Void> deleteById = authorRepository.deleteById("123456789012345678901234");
+        StepVerifier
+                .create(deleteById)
+                .verifyComplete();
+
+        assertThat(authorRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave);
     }
 
     @Test
     void findByName() {
-        Author author = authorRepository.findByName(AUTHOR1.getName()).orElseThrow(() -> new NotFoundException("Author not found"));
-        assertThat(author.toString()).isEqualTo(AUTHOR1.toString());
+        Mono<Author> authorByName = authorRepository.findByName(AUTHOR1.getName());
+        StepVerifier
+                .create(authorByName)
+                .assertNext(author -> assertThat(author.getName()).isEqualTo(AUTHOR1.getName()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void getByWrongName() {
-        assertThrows(NotFoundException.class, () -> authorRepository.findByName("Wrong name").orElseThrow(() -> new NotFoundException("Author not found")));
+        Mono<Author> authorByWrongName = authorRepository.findByName("Wrong name");
+        StepVerifier
+                .create(authorByWrongName)
+                .verifyComplete();
     }
 
 }

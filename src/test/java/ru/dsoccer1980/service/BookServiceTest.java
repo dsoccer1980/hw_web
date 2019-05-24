@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Book;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.dsoccer1980.TestData.*;
 
 
@@ -42,39 +42,63 @@ public class BookServiceTest {
 
     @Test
     void getAll() {
-        List<Book> books = bookService.getAll();
-        assertThat(books.toString()).isEqualTo(Arrays.asList(BOOK1, BOOK2, BOOK3).toString());
+        Flux<Book> books = bookService.getAll();
+        StepVerifier
+                .create(books)
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK1))
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK2))
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK3))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void get() {
-        Book book = bookService.get(BOOK1.getId());
-        assertThat(book).isEqualTo(BOOK1);
+        Mono<Book> bookMono = bookService.get(BOOK1.getId());
+        StepVerifier
+                .create(bookMono)
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK1))
+                .expectComplete()
+                .verify();
     }
+
 
     @Test
     void addNewBook() {
         Book newBook = new Book("Новая книга", null, null);
-        bookService.save(newBook, null, null);
-        List<String> books = bookService.getAll().stream().map(Book::getName).collect(Collectors.toList());
-        assertThat(books.toString()).isEqualTo(Arrays.asList(BOOK1.getName(), BOOK2.getName(), BOOK3.getName(), newBook.getName()).toString());
+        Mono<Book> bookMono = bookService.save(newBook, null, null);
+        StepVerifier
+                .create(bookMono)
+                .assertNext(book -> assertNotNull(book.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void updateExistBook() {
-        Book book = bookService.get(BOOK1.getId());
-        book.setName("Новое имя");
-        bookService.save(book, null, null);
-        List<Book> books = bookService.getAll();
-        assertThat(books.toString()).isEqualTo(Arrays.asList(book, BOOK2, BOOK3).toString());
+        Book bookForUpdate = bookService.get(BOOK1.getId()).block();
+        bookForUpdate.setName("Новое имя");
+        Mono<Book> bookMono = bookService.save(bookForUpdate, null, null);
+        StepVerifier
+                .create(bookMono)
+                .assertNext(book -> assertThat(book.getName()).isEqualTo(bookForUpdate.getName()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     void delete() {
-        bookService.delete(BOOK1.getId());
-        List<Book> books = bookService.getAll();
-        assertThat(books.toString()).isEqualTo(Arrays.asList(BOOK2, BOOK3).toString());
+        Mono<Void> deleteMono = bookService.delete(BOOK1.getId());
+        StepVerifier
+                .create(deleteMono)
+                .verifyComplete();
+
+        Flux<Book> bookFlux = bookService.getAll();
+        StepVerifier
+                .create(bookFlux)
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK2))
+                .assertNext(book -> assertThat(book).isEqualTo(BOOK3))
+                .expectComplete()
+                .verify();
     }
-
-
 }

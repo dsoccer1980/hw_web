@@ -8,7 +8,7 @@ export default class DeleteBook extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8080/book/delete/?id=' + this.props.match.params.id, {
+        fetch('http://localhost:8080/book/?id=' + this.props.match.params.id, {
             method: 'delete',
         }).then(res => {
             this.props.history.push('/book');

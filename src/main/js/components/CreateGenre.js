@@ -28,7 +28,7 @@ export default class CreateGenre extends Component {
         const obj = {
             name: this.state.name,
         };
-        fetch('/genre/save', {
+        fetch('/genre', {
             method: 'post',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
