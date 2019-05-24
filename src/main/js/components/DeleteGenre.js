@@ -8,7 +8,7 @@ export default class DeleteGenre extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8080/genre/delete/?id=' + this.props.match.params.id, {
+        fetch('http://localhost:8080/genre/?id=' + this.props.match.params.id, {
             method: 'delete',
         }).then(res => {
             this.props.history.push('/genre');

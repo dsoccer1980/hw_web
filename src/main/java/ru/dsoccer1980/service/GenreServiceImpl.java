@@ -36,9 +36,4 @@ public class GenreServiceImpl implements GenreService {
         return genreRepository.deleteById(id);
     }
 
-    @Override
-    public Mono<Genre> getById(String id) {
-        return genreRepository.findById(id);
-    }
-
 }

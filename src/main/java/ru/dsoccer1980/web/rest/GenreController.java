@@ -19,27 +19,22 @@ public class GenreController {
         return genreService.getAll();
     }
 
-    @GetMapping("/genre/id/{id}")
+    @GetMapping("/genre/{id}")
     public Mono<Genre> getById(@PathVariable("id") String id) {
-        return genreService.getById(id);
-    }
-
-    @GetMapping("/genre/edit/{id}")
-    public Mono<Genre> edit(@PathVariable("id") String id) {
         return genreService.get(id);
     }
 
-    @PutMapping(value = "/genre/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/genre", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Genre> update(@RequestBody Genre genre) {
         return genreService.save(genre);
     }
 
-    @PostMapping(value = "/genre/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/genre", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Genre> create(@RequestBody Genre genre) {
         return genreService.save(genre);
     }
 
-    @DeleteMapping(value = "/genre/delete")
+    @DeleteMapping(value = "/genre")
     public Mono<Void> delete(@RequestParam("id") String id) {
         return genreService.delete(id);
     }

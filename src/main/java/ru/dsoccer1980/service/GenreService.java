@@ -14,6 +14,4 @@ public interface GenreService {
 
     Mono<Void> delete(String id);
 
-    Mono<Genre> getById(String id);
-
 }
