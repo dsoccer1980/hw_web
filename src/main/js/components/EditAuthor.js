@@ -14,7 +14,7 @@ export default class EditAuthor extends Component {
     }
 
     componentDidMount() {
-        fetch("/author/edit/" + this.props.match.params.id)
+        fetch("/author/" + this.props.match.params.id)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -46,7 +46,7 @@ export default class EditAuthor extends Component {
             id: this.state.id,
             name: this.state.name,
         };
-        fetch('/author/save', {
+        fetch('/author', {
             method: 'put',
             headers: {
                 'Accept': 'application/json, text/plain, */*',

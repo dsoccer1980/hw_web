@@ -19,27 +19,22 @@ public class AuthorController {
         return authorService.getAll();
     }
 
-    @GetMapping("/author/id/{id}")
+    @GetMapping("/author/{id}")
     public Mono<Author> getById(@PathVariable("id") String id) {
-        return authorService.getById(id);
-    }
-
-    @GetMapping("/author/edit/{id}")
-    public Mono<Author> edit(@PathVariable("id") String id) {
         return authorService.get(id);
     }
 
-    @PutMapping(value = "/author/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/author", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Author> update(@RequestBody Author author) {
         return authorService.save(author);
     }
 
-    @PostMapping(value = "/author/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/author", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Author> create(@RequestBody Author author) {
         return authorService.save(author);
     }
 
-    @DeleteMapping(value = "/author/delete")
+    @DeleteMapping(value = "/author")
     public Mono<Void> delete(@RequestParam("id") String id) {
         return authorService.delete(id);
     }
