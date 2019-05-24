@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -19,6 +20,8 @@ import static ru.dsoccer1980.TestData.*;
 public class BookRepositoryImplTest extends AbstractRepositoryTest {
 
     @Autowired
+    MongoOperations mongoOperations;
+    @Autowired
     BookRepository bookRepository;
     @Autowired
     AuthorRepository authorRepository;
@@ -27,23 +30,23 @@ public class BookRepositoryImplTest extends AbstractRepositoryTest {
 
     @BeforeEach
     void populateData() {
-        bookRepository.deleteAll().block();
-        authorRepository.deleteAll().block();
-        genreRepository.deleteAll().block();
-        authorRepository.save(AUTHOR1).block();
-        authorRepository.save(AUTHOR2).block();
-        authorRepository.save(AUTHOR3).block();
-        genreRepository.save(GENRE1).block();
-        genreRepository.save(GENRE2).block();
+        mongoOperations.dropCollection(Book.class);
+        mongoOperations.dropCollection(Author.class);
+        mongoOperations.dropCollection(Genre.class);
+        mongoOperations.save(AUTHOR1);
+        mongoOperations.save(AUTHOR2);
+        mongoOperations.save(AUTHOR3);
+        mongoOperations.save(GENRE1);
+        mongoOperations.save(GENRE2);
         BOOK1.setAuthor(AUTHOR1);
         BOOK2.setAuthor(AUTHOR2);
         BOOK3.setAuthor(AUTHOR3);
         BOOK1.setGenre(GENRE1);
         BOOK2.setGenre(GENRE1);
         BOOK3.setGenre(GENRE2);
-        bookRepository.save(BOOK1).block();
-        bookRepository.save(BOOK2).block();
-        bookRepository.save(BOOK3).block();
+        mongoOperations.save(BOOK1);
+        mongoOperations.save(BOOK2);
+        mongoOperations.save(BOOK3);
     }
 
     @Test
