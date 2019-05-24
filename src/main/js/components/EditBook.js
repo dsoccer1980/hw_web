@@ -21,7 +21,7 @@ export default class EditBook extends Component {
     }
 
     componentDidMount() {
-        fetch("/book/edit/" + this.props.match.params.id)
+        fetch("/book/" + this.props.match.params.id)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -74,7 +74,7 @@ export default class EditBook extends Component {
             authorId: this.state.authorId,
             genreId: this.state.genreId
         };
-        fetch('/book/save', {
+        fetch('/book', {
             method: 'put',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
