@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TableRowBooks from './TableRowBooks'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default class ListBooks extends Component {
 
@@ -10,16 +11,10 @@ export default class ListBooks extends Component {
   }
 
   componentDidMount() {
-    fetch("/book")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({ books: result })
-        },
-        (error) => {
-          this.setState({ error });
-        }
-      )
+      axios.get('/book')
+          .then(response => {
+              this.setState({books: response.data});
+          })
   }
   tabRow() {
     return this.state.books.map(function (object, i) {

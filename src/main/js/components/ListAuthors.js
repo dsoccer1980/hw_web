@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TableRowAuthors from './TableRowAuthors'
+import axios from "axios";
 
 export default class ListAuthors extends Component {
 
@@ -10,16 +11,10 @@ export default class ListAuthors extends Component {
   }
 
   componentDidMount() {
-    fetch("/author")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({ authors: result })
-        },
-        (error) => {
-          this.setState({ error });
-        }
-      )
+      axios.get('/author')
+          .then(response => {
+              this.setState({authors: response.data});
+          })
   }
 
   tabRow() {

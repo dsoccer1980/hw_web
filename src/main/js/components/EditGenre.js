@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from "axios";
 
 export default class EditGenre extends Component {
 
@@ -15,19 +16,16 @@ export default class EditGenre extends Component {
     }
 
     componentDidMount() {
-        fetch("/genre/" + this.props.match.params.id)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        id: result.id,
-                        name: result.name
-                    })
-                },
-                (error) => {
-                    this.setState({ error });
-                }
-            )
+        axios.get('/genre/' + this.props.match.params.id)
+            .then(response => {
+                this.setState({
+                    id: response.data.id,
+                    name: response.data.name
+                });
+            })
+            .catch(function (error) {
+                this.setState({error});
+            })
     }
 
     onChangeName(e) {
@@ -47,14 +45,12 @@ export default class EditGenre extends Component {
             id: this.state.id,
             name: this.state.name,
         };
-        fetch('/genre', {
-            method: 'put',
+        axios.put('/genre', JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(res => res.json())
+            }
+        })
             .then(res => {
                 this.props.history.push('/genre');
             });

@@ -9,6 +9,7 @@ import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.dto.BookDto;
 import ru.dsoccer1980.service.BookService;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequiredArgsConstructor
 public class BookController {

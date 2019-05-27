@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import axios from 'axios';
 
 export default class CreateAuthor extends Component {
     constructor(props) {
@@ -28,29 +29,32 @@ export default class CreateAuthor extends Component {
         const obj = {
             name: this.state.name,
         };
-        fetch('/author', {
-            method: 'post',
+        axios.post('/author', JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(res => { res.json(); this.props.history.push('/author'); })
+            }
+        })
+            .then(res => {
+                this.props.history.push('/author');
+            });
     }
 
     render() {
         return (
-            <div style={{ marginTop: 10 }}>
+            <div style={{marginTop: 10}}>
                 <h3 align="center">Create Author</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Author Name: </label>
-                        <input type="text" className="form-control" value={this.state.name} onChange={this.onChangeName} />
+                        <input type="text" className="form-control" value={this.state.name}
+                               onChange={this.onChangeName}/>
                     </div>
                     <div className="row">
                         <div className="form-group">
-                            <input type="submit" value="Create" className="btn btn-primary" /> &nbsp;
-                        <button type="button" className="btn btn-secondary" onClick={this.onCancelClick}>Cancel</button>
+                            <input type="submit" value="Create" className="btn btn-primary"/> &nbsp;
+                            <button type="button" className="btn btn-secondary" onClick={this.onCancelClick}>Cancel
+                            </button>
                         </div>
                     </div>
                 </form>

@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Genre;
 import ru.dsoccer1980.service.GenreService;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequiredArgsConstructor
 public class GenreController {
