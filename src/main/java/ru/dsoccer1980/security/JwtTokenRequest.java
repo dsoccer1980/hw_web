@@ -1,4 +1,4 @@
-package ru.dsoccer1980.jwt;
+package ru.dsoccer1980.security;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package ru.dsoccer1980.jwt;
+package ru.dsoccer1980.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;

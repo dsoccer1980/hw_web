@@ -1,4 +1,4 @@
-package ru.dsoccer1980.jwt;
+package ru.dsoccer1980.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
