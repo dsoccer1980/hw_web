@@ -4,9 +4,9 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import ru.dsoccer1980.domain.Author;
-import ru.dsoccer1980.domain.Book;
-import ru.dsoccer1980.domain.Genre;
+import ru.dsoccer1980.domain.*;
+
+import java.util.Set;
 
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
@@ -19,9 +19,11 @@ public class InitMongoDBDataChangeLog {
     private static final Book BOOK1 = new Book("100000000000000000000100", "Трудно быть Богом", AUTHOR1, GENRE1);
     private static final Book BOOK2 = new Book("100000000000000000000101", "Машина времени", AUTHOR2, GENRE1);
     private static final Book BOOK3 = new Book("100000000000000000000102", "Онегин", AUTHOR3, GENRE2);
+    private static final User USER1 = new User(1L, "admin", "123", Set.of(Role.ADMIN));
     private Author springDataAuthor;
     private Genre springDataGenre;
     private Book springDataBook;
+    private User springDataUser;
 
     @ChangeSet(order = "000", id = "dropDB", author = "stvort", runAlways = true)
     public void dropDB(MongoDatabase database) {
@@ -46,5 +48,11 @@ public class InitMongoDBDataChangeLog {
         springDataBook = template.save(BOOK1);
         springDataBook = template.save(BOOK2);
         springDataBook = template.save(BOOK3);
+    }
+
+    @ChangeSet(order = "004", id = "initUsers", author = "stvort", runAlways = true)
+    public void initUsers(MongoTemplate template) {
+        springDataUser = template.save(USER1);
+
     }
 }
