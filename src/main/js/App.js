@@ -16,6 +16,8 @@ import DeleteAuthor from "./components/DeleteAuthor";
 import DeleteBook from "./components/DeleteBook";
 import LoginComponent from './components/LoginComponent';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
+import LogoutComponent from './components/LogoutComponent';
+import MenuComponent from './components/MenuComponent';
 
 
 class App extends Component {
@@ -25,21 +27,7 @@ class App extends Component {
     return (
         <Router>
           <div className="container">
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul className="navbar-nav mr-auto">
-                  <li className="nav-item">
-                    <Link to={'/book'} className="nav-link">Books</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to={'/author'} className="nav-link">Authors</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to={'/genre'} className="nav-link">Genres</Link>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+            <MenuComponent/>
 
             <Switch>
               <Route exact path='/' component={LoginComponent} />
@@ -57,6 +45,7 @@ class App extends Component {
               <AuthenticatedRoute path='/book/delete/:id' component={DeleteBook} />
 
               <Route path="/login" exact component={LoginComponent} />
+              <AuthenticatedRoute path="/logout" exact component={LogoutComponent} />
             </Switch>
           </div>
         </Router>
