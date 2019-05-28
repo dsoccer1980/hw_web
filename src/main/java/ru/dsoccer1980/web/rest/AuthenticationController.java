@@ -1,4 +1,4 @@
-package ru.dsoccer1980.security;
+package ru.dsoccer1980.web.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +10,10 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.dsoccer1980.security.AuthenticationException;
+import ru.dsoccer1980.security.JwtTokenRequest;
+import ru.dsoccer1980.security.JwtTokenResponse;
+import ru.dsoccer1980.security.JwtTokenUtil;
 import ru.dsoccer1980.service.UserDetailsServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +21,7 @@ import java.util.Objects;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000"})
-public class JwtAuthenticationRestController {
+public class AuthenticationController {
 
     @Value("${jwt.http.request.header}")
     private String tokenHeader;

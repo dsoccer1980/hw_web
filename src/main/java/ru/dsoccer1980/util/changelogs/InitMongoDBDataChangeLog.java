@@ -4,6 +4,7 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.dsoccer1980.domain.*;
 
 import java.util.Set;
@@ -19,7 +20,7 @@ public class InitMongoDBDataChangeLog {
     private static final Book BOOK1 = new Book("100000000000000000000100", "Трудно быть Богом", AUTHOR1, GENRE1);
     private static final Book BOOK2 = new Book("100000000000000000000101", "Машина времени", AUTHOR2, GENRE1);
     private static final Book BOOK3 = new Book("100000000000000000000102", "Онегин", AUTHOR3, GENRE2);
-    private static final User USER1 = new User(1L, "admin", "123", Set.of(Role.ADMIN));
+    private static final User USER1 = new User(1L, "admin", new BCryptPasswordEncoder().encode("password"), Set.of(Role.ADMIN));
     private Author springDataAuthor;
     private Genre springDataGenre;
     private Book springDataBook;
