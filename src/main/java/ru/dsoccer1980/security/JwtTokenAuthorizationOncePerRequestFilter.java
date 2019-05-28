@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.dsoccer1980.service.UserDetailsServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,7 +25,7 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private UserDetailsService jwtInMemoryUserDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -57,7 +57,7 @@ public class JwtTokenAuthorizationOncePerRequestFilter extends OncePerRequestFil
         logger.debug("JWT_TOKEN_USERNAME_VALUE '{}'", username);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = this.jwtInMemoryUserDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

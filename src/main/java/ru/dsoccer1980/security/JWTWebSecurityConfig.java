@@ -81,7 +81,7 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 ).and()
                 .ignoring()
                 .antMatchers(
-                        "/built/bundle.js", "*.ico"
+                        "/built/bundle.js"
                 );
 
 
