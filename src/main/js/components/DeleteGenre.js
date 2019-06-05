@@ -9,7 +9,7 @@ export default class DeleteGenre extends Component {
     }
 
     componentDidMount() {
-        axios.delete('/genre/?id=' + this.props.match.params.id)
+        axios.delete(`/genre/?id=${this.props.match.params.id}`)
             .then(res => {
                 this.props.history.push('/genre');
             });

@@ -9,7 +9,7 @@ export default class DeleteAuthor extends Component {
     }
 
     componentDidMount() {
-        axios.delete('/author/?id=' + this.props.match.params.id)
+        axios.delete(`/author/?id=${this.props.match.params.id}`)
             .then(res => {
                 this.props.history.push('/author');
             });

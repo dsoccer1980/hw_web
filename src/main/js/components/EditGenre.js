@@ -16,7 +16,7 @@ export default class EditGenre extends Component {
     }
 
     componentDidMount() {
-        axios.get('/genre/' + this.props.match.params.id)
+        axios.get(`/genre/${this.props.match.params.id}`)
             .then(response => {
                 this.setState({
                     id: response.data.id,

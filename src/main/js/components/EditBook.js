@@ -22,7 +22,7 @@ export default class EditBook extends Component {
     }
 
     componentDidMount() {
-        axios.get('/book/' + this.props.match.params.id)
+        axios.get(`/book/${this.props.match.params.id}`)
             .then(response => {
                 this.setState({
                     id: response.data.id,

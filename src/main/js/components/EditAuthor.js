@@ -15,7 +15,7 @@ export default class EditAuthor extends Component {
     }
 
     componentDidMount() {
-        axios.get('/author/' + this.props.match.params.id)
+        axios.get(`/author/${this.props.match.params.id}`)
             .then(response => {
                 this.setState({
                     id: response.data.id,
