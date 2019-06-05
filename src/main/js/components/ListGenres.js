@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TableRowGenres from './TableRowGenres'
 import { Link } from 'react-router-dom';
+import axios from "axios";
 
 export default class ListGenres extends Component {
 
@@ -10,16 +11,10 @@ export default class ListGenres extends Component {
   }
 
   componentDidMount() {
-    fetch("/genre")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({ genres: result })
-        },
-        (error) => {
-          this.setState({ error });
-        }
-      )
+      axios.get('/genre')
+          .then(response => {
+              this.setState({genres: response.data});
+          })
   }
 
   tabRow() {
@@ -43,7 +38,7 @@ export default class ListGenres extends Component {
             {this.tabRow()}
           </tbody>
         </table>
-        <Link to={'/createGenre'} className="nav-link">
+        <Link to='/createGenre' className="nav-link">
           <button className="btn btn-primary">Create</button>
         </Link>
       </div>

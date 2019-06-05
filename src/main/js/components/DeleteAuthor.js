@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import axios from 'axios';
 
 
 export default class DeleteAuthor extends Component {
@@ -8,12 +9,10 @@ export default class DeleteAuthor extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8080/author/?id=' + this.props.match.params.id, {
-            method: 'delete',
-        }).then(res => {
-            this.props.history.push('/author');
-        })
-            .catch(err => console.log(err));
+        axios.delete(`/author/?id=${this.props.match.params.id}`)
+            .then(res => {
+                this.props.history.push('/author');
+            });
     }
 
     render() {

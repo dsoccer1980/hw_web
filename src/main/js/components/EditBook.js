@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import SelectShow from './SelectShow';
+import axios from "axios";
 
 
 export default class EditBook extends Component {
@@ -21,43 +22,31 @@ export default class EditBook extends Component {
     }
 
     componentDidMount() {
-        fetch("/book/" + this.props.match.params.id)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        id: result.id,
-                        name: result.name,
-                        authorId: result.author != null ? result.author.id : '',
-                        genreId: result.genre != null ? result.genre.id : ''
-                    })
-                },
-                (error) => {
-                    this.setState({ error });
-                }
-            )
+        axios.get(`/book/${this.props.match.params.id}`)
+            .then(response => {
+                this.setState({
+                    id: response.data.id,
+                    name: response.data.name,
+                    authorId: response.data.author != null ? response.data.author.id : '',
+                    genreId: response.data.genre != null ? response.data.genre.id : ''
+                });
+            });
 
-        fetch("/author/")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({ authors: result })
-                },
-                (error) => {
-                    this.setState({ error });
-                }
-            )
+        axios.get('/author')
+            .then(response => {
+                this.setState({
+                    authors: response.data,
+                });
+            });
 
-        fetch("/genre/")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({ genres: result })
-                },
-                (error) => {
-                    this.setState({ error });
-                }
-            )
+        axios.get('/genre')
+            .then(response => {
+                this.setState({
+                    genres: response.data,
+                });
+            });
+
+
     }
 
     onChangeName(e) {
@@ -74,14 +63,15 @@ export default class EditBook extends Component {
             authorId: this.state.authorId,
             genreId: this.state.genreId
         };
-        fetch('/book', {
-            method: 'put',
+        axios.put('/book', JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(res => { res.json(); this.props.history.push('/book'); })
+            }
+        })
+            .then(res => {
+                this.props.history.push('/book');
+            });
 
 
     }
@@ -93,43 +83,44 @@ export default class EditBook extends Component {
 
     tabRowAuthor() {
         return this.state.authors.map(function (object, i) {
-            return <SelectShow obj={object} key={i} />;
+            return <SelectShow obj={object} key={i}/>;
         });
     }
 
     tabRowGenre() {
         return this.state.genres.map(function (object, i) {
-            return <SelectShow obj={object} key={i} />;
+            return <SelectShow obj={object} key={i}/>;
         });
     }
 
     changeSelectAuthor = (e) => {
-        this.setState({ authorId: e.currentTarget.value })
+        this.setState({authorId: e.currentTarget.value})
     }
 
     changeSelectGenre = (e) => {
-       this.setState({ genreId: e.currentTarget.value })
+        this.setState({genreId: e.currentTarget.value})
     }
 
 
     render() {
         return (
-            <div style={{ marginTop: 10 }}>
+            <div style={{marginTop: 10}}>
                 <h3 align="center">Update Book</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <input type="hidden" className="form-control" value={this.state.id} />
+                        <input type="hidden" className="form-control" value={this.state.id}/>
                     </div>
                     <div className="form-group">
                         <label>Book Name: </label>
-                        <input type="text" className="form-control" value={this.state.name} onChange={this.onChangeName} />
+                        <input type="text" className="form-control" value={this.state.name}
+                               onChange={this.onChangeName}/>
                     </div>
                     <div className="form-group">
                         <label>Author Name: </label>
                         <select className="custom-select"
-                            name="authorId"
-                            onChange={this.changeSelectAuthor}
-                            value={this.state.authorId}>
+                                name="authorId"
+                                onChange={this.changeSelectAuthor}
+                                value={this.state.authorId}>
 
                             <option disabled value="">Выберите автора</option>
                             {this.tabRowAuthor()}
@@ -139,17 +130,17 @@ export default class EditBook extends Component {
                     <div className="form-group">
                         <label>Genre Name: </label>
                         <select className="custom-select"
-                            name="genreId"
-                            onChange={this.changeSelectGenre}
-                            value={this.state.genreId}>
+                                name="genreId"
+                                onChange={this.changeSelectGenre}
+                                value={this.state.genreId}>
 
                             <option disabled value="">Выберите жанр</option>
-                            
+
                             {this.tabRowGenre()}
                         </select>
                     </div>
                     <div className="form-group">
-                        <input type="submit" value="Update" className="btn btn-primary" /> &nbsp;
+                        <input type="submit" value="Update" className="btn btn-primary"/> &nbsp;
                         <button type="button" className="btn btn-secondary" onClick={this.onCancelClick}>Cancel</button>
                     </div>
                 </form>

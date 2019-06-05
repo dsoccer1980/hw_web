@@ -3,3 +3,15 @@ spring:
     mongodb:
       port: 27017
       database: proddb
+
+jwt:
+  signing:
+    key:
+      secret: mySecret
+  http:
+    request:
+      header: Authorization
+  token:
+    expiration:
+      in:
+        seconds: 604800

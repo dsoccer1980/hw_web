@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class CreateGenre extends Component {
     constructor(props) {
@@ -28,14 +29,15 @@ export default class CreateGenre extends Component {
         const obj = {
             name: this.state.name,
         };
-        fetch('/genre', {
-            method: 'post',
+        axios.post('/genre', JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(res => {res.json();this.props.history.push('/genre');})
+            }
+        })
+            .then(res => {
+                this.props.history.push('/genre');
+            });
     }
 
     render() {

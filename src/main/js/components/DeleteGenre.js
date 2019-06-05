@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from "axios";
 
 
 export default class DeleteGenre extends Component {
@@ -8,12 +9,10 @@ export default class DeleteGenre extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:8080/genre/?id=' + this.props.match.params.id, {
-            method: 'delete',
-        }).then(res => {
-            this.props.history.push('/genre');
-        })
-            .catch(err => console.log(err));
+        axios.delete(`/genre/?id=${this.props.match.params.id}`)
+            .then(res => {
+                this.props.history.push('/genre');
+            });
     }
 
     render() {

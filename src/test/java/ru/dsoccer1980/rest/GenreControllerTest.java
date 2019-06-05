@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import ru.dsoccer1980.domain.Genre;
-import ru.dsoccer1980.service.GenreService;
 import ru.dsoccer1980.web.rest.GenreController;
 
 import static org.mockito.BDDMockito.given;
@@ -22,11 +22,16 @@ public class GenreControllerTest {
     WebTestClient webTestClient;
 
     @MockBean
-    private GenreService genreService;
+    private GenreController genreController;
+
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
 
     @Test
     void test() {
-        given(this.genreService.getAll())
+        given(this.genreController.getAll())
                 .willReturn(Flux.just(new Genre("Фантастика")));
         this.webTestClient.get().uri("/genre")
                 .exchange()
