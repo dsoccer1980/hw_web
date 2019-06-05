@@ -11,7 +11,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.repository.BookRepository;
-import ru.dsoccer1980.service.BookService;
 import ru.dsoccer1980.web.rest.BookController;
 
 import static org.mockito.BDDMockito.given;
@@ -24,7 +23,7 @@ public class BookControllerTest {
     WebTestClient webTestClient;
 
     @MockBean
-    private BookService bookService;
+    private BookController bookController;
 
     @MockBean
     private BookRepository bookRepository;
@@ -36,7 +35,7 @@ public class BookControllerTest {
 
     @Test
     void test() {
-        given(this.bookService.getAll())
+        given(this.bookController.getAll())
                 .willReturn(Flux.just(new Book("Книга", null, null)));
         this.webTestClient.get().uri("/book")
                 .exchange()

@@ -10,7 +10,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import ru.dsoccer1980.domain.Author;
-import ru.dsoccer1980.service.AuthorService;
 import ru.dsoccer1980.web.rest.AuthorController;
 
 import static org.mockito.BDDMockito.given;
@@ -19,12 +18,11 @@ import static org.mockito.BDDMockito.given;
 @WebFluxTest(AuthorController.class)
 public class AuthorControllerTest {
 
-
     @Autowired
     WebTestClient webTestClient;
 
     @MockBean
-    private AuthorService authorService;
+    private AuthorController authorController;
 
     @WithMockUser(
             username = "admin",
@@ -33,7 +31,7 @@ public class AuthorControllerTest {
 
     @Test
     void test() {
-        given(this.authorService.getAll())
+        given(this.authorController.getAll())
                 .willReturn(Flux.just(new Author("Стругацкий")));
         this.webTestClient.get().uri("/author")
                 .exchange()
