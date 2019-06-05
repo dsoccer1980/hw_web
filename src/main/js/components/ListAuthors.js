@@ -39,7 +39,7 @@ export default class ListAuthors extends Component {
           </tbody>
         </table>
         <div>
-          <Link to={'/createAuthor'} className="nav-link">
+          <Link to='/createAuthor' className="nav-link">
             <button className="btn btn-primary">Create</button>
           </Link>
         </div>

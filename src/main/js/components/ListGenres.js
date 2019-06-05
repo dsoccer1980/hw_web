@@ -38,7 +38,7 @@ export default class ListGenres extends Component {
             {this.tabRow()}
           </tbody>
         </table>
-        <Link to={'/createGenre'} className="nav-link">
+        <Link to='/createGenre' className="nav-link">
           <button className="btn btn-primary">Create</button>
         </Link>
       </div>

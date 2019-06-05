@@ -12,13 +12,13 @@ class MenuComponent extends Component {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <Link to={'/book'} className="nav-link">Books</Link>
+                            <Link to='/book' className="nav-link">Books</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to={'/author'} className="nav-link">Authors</Link>
+                            <Link to='/author' className="nav-link">Authors</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to={'/genre'} className="nav-link">Genres</Link>
+                            <Link to='/genre' className="nav-link">Genres</Link>
                         </li>
                         {isUserLoggedIn && <li><Link className="nav-link" to="/logout" onClick={AuthenticationService.logout}>Logout</Link></li>}
                     </ul>

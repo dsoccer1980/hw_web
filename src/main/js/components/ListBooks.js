@@ -40,7 +40,7 @@ export default class ListBooks extends Component {
           </tbody>
         </table>
         <div>
-          <Link to={'/createBook'} className="nav-link">
+          <Link to='/createBook' className="nav-link">
             <button className="btn btn-primary">Create</button>
           </Link>
         </div>
