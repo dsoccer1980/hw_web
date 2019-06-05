@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -53,7 +52,13 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(jwtUnAuthorizedResponseAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
+                .authorizeRequests().antMatchers(HttpMethod.GET, "/").permitAll()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/authenticate").permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/built/bundle.js").permitAll()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity
@@ -64,27 +69,5 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cacheControl(); //disable caching
     }
 
-    @Override
-    public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity
-                .ignoring()
-                .antMatchers(
-                        HttpMethod.POST,
-                        "/authenticate"
-                )
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-                .and()
-                .ignoring()
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/"
-                ).and()
-                .ignoring()
-                .antMatchers(
-                        "/built/bundle.js"
-                );
-
-
-    }
 }
 
