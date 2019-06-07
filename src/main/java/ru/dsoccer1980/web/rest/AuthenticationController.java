@@ -10,6 +10,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.dsoccer1980.domain.Role;
+import ru.dsoccer1980.domain.User;
 import ru.dsoccer1980.security.AuthenticationException;
 import ru.dsoccer1980.security.JwtTokenRequest;
 import ru.dsoccer1980.security.JwtTokenResponse;
@@ -17,6 +19,7 @@ import ru.dsoccer1980.security.JwtTokenUtil;
 import ru.dsoccer1980.service.UserDetailsServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Objects;
 
 @RestController
@@ -35,6 +38,11 @@ public class AuthenticationController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @GetMapping("/isadmin")
+    public boolean isAdmin(Principal currentUser) {
+        return ((User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal()).getRoles().contains(Role.ADMIN);
+    }
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtTokenRequest authenticationRequest)
             throws AuthenticationException {
@@ -51,7 +59,8 @@ public class AuthenticationController {
     @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
         String authToken = request.getHeader(tokenHeader);
-        final String token = authToken.substring(7);
+        final String bearer = "Bearer ";
+        final String token = authToken.substring(bearer.length());
         String username = jwtTokenUtil.getUsernameFromToken(token);
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
