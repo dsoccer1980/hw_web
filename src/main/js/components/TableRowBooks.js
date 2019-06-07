@@ -16,7 +16,7 @@ export default class TableRowBooks extends Component {
 
         if (isAdmin === 'true') {
             linkEdit = <Link to={"/book/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>;
-            linkDelete = <Link to={"/author/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>;
+            linkDelete = <Link to={"/book/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>;
         }
 
         var authorNameProp = this.props.obj.author != null ? this.props.obj.author.name : "";
