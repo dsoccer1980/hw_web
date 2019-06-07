@@ -54,24 +54,20 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(HttpMethod.GET, "/").permitAll()
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.GET, "/log").permitAll()
-                .and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, "/authenticate").permitAll()
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.GET,"/author/{\\d+}").hasRole("ADMIN")
+                .authorizeRequests().antMatchers(HttpMethod.GET,"/author/{\\d+}", "/genre/{\\d+}", "/book/{\\d+}").hasRole("ADMIN")
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.PUT,"/author").hasRole("ADMIN")
+                .authorizeRequests().antMatchers(HttpMethod.PUT,"/author", "/genre", "/book").hasRole("ADMIN")
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.POST,"/author").hasRole("ADMIN")
+                .authorizeRequests().antMatchers(HttpMethod.POST,"/author", "/genre", "/book").hasRole("ADMIN")
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/author/**").hasRole("ADMIN")
+                .authorizeRequests().antMatchers(HttpMethod.DELETE,"/author/**", "/genre/**", "/book/**").hasRole("ADMIN")
                 .and()
                 .authorizeRequests().antMatchers("/built/bundle.js").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .logout().permitAll();
+                .anyRequest().authenticated();
 
         httpSecurity
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
