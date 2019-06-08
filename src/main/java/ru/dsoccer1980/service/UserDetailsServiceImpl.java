@@ -24,19 +24,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).block();
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public boolean addUser(User user) {
-        User userFromDb = userRepository.findByUsername(user.getUsername()).block();
+        Optional<User> userFromDb = userRepository.findByUsername(user.getUsername());
 
-        if (userFromDb != null) {
+        if (userFromDb.isEmpty()) {
             return false;
         }
 
@@ -49,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
     public List<User> findAll() {
-        return userRepository.findAll().toStream().collect(Collectors.toList());
+        return userRepository.findAll();
     }
 
     public void saveUser(User user, String username, Map<String, String> form) {

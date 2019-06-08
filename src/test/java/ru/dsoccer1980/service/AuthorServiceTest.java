@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Author;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.dsoccer1980.TestData.*;
 
 
@@ -36,64 +36,38 @@ public class AuthorServiceTest {
 
     @Test
     void getAll() {
-        Flux<Author> authors = authorService.getAll();
-        StepVerifier
-                .create(authors)
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR1))
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR2))
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR3))
-                .expectComplete()
-                .verify();
+        List<Author> authors = authorService.getAll();
+        assertThat(authors.toString()).isEqualTo(Arrays.asList(AUTHOR1, AUTHOR2, AUTHOR3).toString());
     }
-
 
     @Test
     void get() {
-        Mono<Author> authorMono = authorService.get(AUTHOR1.getId());
-        StepVerifier
-                .create(authorMono)
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR1))
-                .expectComplete()
-                .verify();
+        Author author = authorService.get(AUTHOR1.getId());
+        assertThat(author).isEqualTo(AUTHOR1);
     }
 
     @Test
     void addNewAuthor() {
         Author newAuthor = new Author("Новый автор");
-        Mono<Author> authorMono = authorService.save(newAuthor);
-        StepVerifier
-                .create(authorMono)
-                .assertNext(author -> assertNotNull(author.getId()))
-                .expectComplete()
-                .verify();
+        authorService.save(newAuthor);
+        List<String> authors = authorService.getAll().stream().map(Author::getName).collect(Collectors.toList());
+        assertThat(authors.toString()).isEqualTo(Arrays.asList(AUTHOR1.getName(), AUTHOR2.getName(), AUTHOR3.getName(), newAuthor.getName()).toString());
     }
 
     @Test
     void updateExistAuthor() {
-        Author authorForUpdate = authorService.get(AUTHOR1.getId()).block();
-        authorForUpdate.setName("Новое имя");
-        Mono<Author> authorMono = authorService.save(authorForUpdate);
-        StepVerifier
-                .create(authorMono)
-                .assertNext(author -> assertThat(author.getName()).isEqualTo(authorForUpdate.getName()))
-                .expectComplete()
-                .verify();
+        Author author = authorService.get(AUTHOR1.getId());
+        author.setName("Новое имя");
+        authorService.save(author);
+        List<Author> authors = authorService.getAll();
+        assertThat(authors.toString()).isEqualTo(Arrays.asList(author, AUTHOR2, AUTHOR3).toString());
     }
 
     @Test
     void delete() {
-        Mono<Void> deleteMono = authorService.delete(AUTHOR1.getId());
-        StepVerifier
-                .create(deleteMono)
-                .verifyComplete();
-
-        Flux<Author> authors = authorService.getAll();
-        StepVerifier
-                .create(authors)
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR2))
-                .assertNext(author -> assertThat(author).isEqualTo(AUTHOR3))
-                .expectComplete()
-                .verify();
+        authorService.delete(AUTHOR1.getId());
+        List<Author> authors = authorService.getAll();
+        assertThat(authors.toString()).isEqualTo(Arrays.asList(AUTHOR2, AUTHOR3).toString());
     }
 
 }
