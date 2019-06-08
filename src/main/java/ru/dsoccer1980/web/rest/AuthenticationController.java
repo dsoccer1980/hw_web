@@ -18,7 +18,6 @@ import ru.dsoccer1980.security.JwtTokenResponse;
 import ru.dsoccer1980.security.JwtTokenUtil;
 import ru.dsoccer1980.service.UserDetailsServiceImpl;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Objects;
 
@@ -54,22 +53,6 @@ public class AuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtTokenResponse(token));
-    }
-
-    @RequestMapping(value = "/refresh", method = RequestMethod.GET)
-    public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
-        String authToken = request.getHeader(tokenHeader);
-        final String bearer = "Bearer ";
-        final String token = authToken.substring(bearer.length());
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        UserDetails user = userDetailsService.loadUserByUsername(username);
-
-        if (jwtTokenUtil.canTokenBeRefreshed(token)) {
-            String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtTokenResponse(refreshedToken));
-        } else {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
     @ExceptionHandler({AuthenticationException.class})
