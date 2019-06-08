@@ -1,5 +1,7 @@
 package ru.dsoccer1980.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,11 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.dsoccer1980.TestData.AUTHOR1;
 
 
 @ExtendWith(SpringExtension.class)
@@ -44,13 +47,20 @@ public class AuthorControllerTest {
     @MockBean
     private UserRepository userRepository;
 
+    private static String asJsonString(final Object obj) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            final String jsonContent = mapper.writeValueAsString(obj);
+            return jsonContent;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
-    @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_USER"}
-    )
-    void test() throws Exception {
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @DisplayName("Пользователь может смотреть авторов")
+    void testGetAllUser() throws Exception {
         given(authorService.getAll())
                 .willReturn(List.of(new Author("Стругацкий")));
 
@@ -60,18 +70,84 @@ public class AuthorControllerTest {
     }
 
     @Test
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-    void test2() throws Exception {
-        doNothing().when(authorService).delete("100000000000000000000001");
-//        given(authorService.delete("100000000000000000000001")
-//                .getMock();
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @DisplayName("Пользователь не может получить автора по ид")
+    void testGetByIdUser() throws Exception {
+        given(authorService.get("1"))
+                .willReturn(new Author("Стругацкий"));
 
+        mvc.perform(get("/author/1"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @DisplayName("Администратор может получить автора по ид")
+    void testGetByIdAdmin() throws Exception {
+        given(authorService.get("1"))
+                .willReturn(new Author("Стругацкий"));
+
+        mvc.perform(get("/author/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Стругацкий")));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @DisplayName("Администратор может удалить автора")
+    void testDeleteAdmin() throws Exception {
+        doNothing().when(authorService).delete("100000000000000000000001");
         mvc.perform(delete("/author").param("id", "100000000000000000000001"))
                 .andExpect(status().isOk());
-        // .andExpect(content().string(containsString("Стругацкий")));
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @DisplayName("Пользователь не может удалить автора")
+    void testDeleteUser() throws Exception {
+        doNothing().when(authorService).delete("100000000000000000000001");
+        mvc.perform(delete("/author").param("id", "100000000000000000000001"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @DisplayName("Администратор может создавать автора")
+    void testPostAdmin() throws Exception {
+        mvc.perform(post("/author")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(AUTHOR1)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @DisplayName("Пользователь не может создавать автора")
+    void testPostUser() throws Exception {
+        mvc.perform(post("/author")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(AUTHOR1)))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @DisplayName("Администратор может обновлять автора")
+    void testPutAdmin() throws Exception {
+        mvc.perform(put("/author")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(AUTHOR1)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @DisplayName("Пользователь не может обновлять автора")
+    void testPutUser() throws Exception {
+        mvc.perform(put("/author")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(AUTHOR1)))
+                .andExpect(status().is(403));
     }
 
 }
