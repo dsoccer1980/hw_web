@@ -12,27 +12,28 @@ export default class TableRowBooks extends Component {
 
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
+        const {obj} = this.props;
 
-        var authorNameProp = this.props.obj.author != null ? this.props.obj.author.name : "";
-        var genreNameProp = this.props.obj.genre != null ? this.props.obj.genre.name : "";
+        var authorNameProp = obj.author != null ? this.props.obj.author.name : "";
+        var genreNameProp = obj.genre != null ? obj.genre.name : "";
         return (
             <tr>
                 <td>
-                    {this.props.obj.name}
+                    {obj.name}
                 </td>
                 <td>
-                    {authorNameProp}
+                    {obj.author != null ? obj.author.name : ""}
                 </td>
                 <td>
                     {genreNameProp}
                 </td>
                 <td>
                     {isAdmin === 'true' &&
-                    <Link to={"/book/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>}
+                    <Link to={`/book/edit/${obj.id}`} className="btn btn-primary">Edit</Link>}
                 </td>
                 <td>
                     {isAdmin === 'true' &&
-                    <Link to={"/book/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>}
+                    <Link to={`/book/delete/${obj.id}`} className="btn btn-danger">Delete</Link>}
                 </td>
             </tr>
         );

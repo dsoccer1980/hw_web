@@ -10,19 +10,20 @@ export default class TableRowAuthors extends Component {
 
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
+        const {obj} = this.props;
 
         return (
             <tr>
                 <td>
-                    {this.props.obj.name}
+                    {obj.name}
                 </td>
                 <td>
                     {isAdmin === 'true' &&
-                    <Link to={"/author/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>}
+                    <Link to={`/author/edit/${obj.id}`} className="btn btn-primary">Edit</Link>}
                 </td>
                 <td>
                     {isAdmin === 'true' &&
-                    <Link to={"/author/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>}
+                    <Link to={`/author/delete/${obj.id}`} className="btn btn-danger">Delete</Link>}
                 </td>
             </tr>
         );
