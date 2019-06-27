@@ -12,12 +12,6 @@ export default class TableRowBooks extends Component {
 
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
-        let linkEdit, linkDelete;
-
-        if (isAdmin === 'true') {
-            linkEdit = <Link to={"/book/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>;
-            linkDelete = <Link to={"/book/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>;
-        }
 
         var authorNameProp = this.props.obj.author != null ? this.props.obj.author.name : "";
         var genreNameProp = this.props.obj.genre != null ? this.props.obj.genre.name : "";
@@ -33,10 +27,12 @@ export default class TableRowBooks extends Component {
                     {genreNameProp}
                 </td>
                 <td>
-                    {linkEdit}
+                    {isAdmin === 'true' &&
+                    <Link to={"/book/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>}
                 </td>
                 <td>
-                    {linkDelete}
+                    {isAdmin === 'true' &&
+                    <Link to={"/book/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>}
                 </td>
             </tr>
         );

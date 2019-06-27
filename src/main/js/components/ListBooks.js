@@ -26,13 +26,6 @@ export default class ListBooks extends Component {
 
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
-        let linkCreate;
-
-        if (isAdmin === 'true') {
-            linkCreate = <Link to={'/createBook'} className="nav-link">
-                <button className="btn btn-primary">Create</button>
-            </Link>;
-        }
 
         return (
             <div>
@@ -51,7 +44,10 @@ export default class ListBooks extends Component {
                     </tbody>
                 </table>
                 <div>
-                    {linkCreate}
+                    {isAdmin === 'true' && <Link to={'/createBook'} className="nav-link">
+                        <button className="btn btn-primary">Create</button>
+                    </Link>
+                    }
                 </div>
             </div>
         );

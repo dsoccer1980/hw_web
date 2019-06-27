@@ -10,12 +10,6 @@ export default class TableRowAuthors extends Component {
 
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
-        let linkEdit, linkDelete;
-
-        if (isAdmin === 'true') {
-            linkEdit = <Link to={"/author/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>;
-            linkDelete = <Link to={"/author/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>;
-        }
 
         return (
             <tr>
@@ -23,10 +17,12 @@ export default class TableRowAuthors extends Component {
                     {this.props.obj.name}
                 </td>
                 <td>
-                    {linkEdit}
+                    {isAdmin === 'true' &&
+                    <Link to={"/author/edit/" + this.props.obj.id} className="btn btn-primary">Edit</Link>}
                 </td>
                 <td>
-                    {linkDelete}
+                    {isAdmin === 'true' &&
+                    <Link to={"/author/delete/" + this.props.obj.id} className="btn btn-danger">Delete</Link>}
                 </td>
             </tr>
         );
