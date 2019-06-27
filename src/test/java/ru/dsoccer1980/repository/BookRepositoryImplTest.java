@@ -4,23 +4,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.domain.Genre;
+import ru.dsoccer1980.util.exception.NotFoundException;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.dsoccer1980.TestData.*;
 
 
 public class BookRepositoryImplTest extends AbstractRepositoryTest {
 
-    @Autowired
-    MongoOperations mongoOperations;
     @Autowired
     BookRepository bookRepository;
     @Autowired
@@ -30,190 +29,139 @@ public class BookRepositoryImplTest extends AbstractRepositoryTest {
 
     @BeforeEach
     void populateData() {
-        mongoOperations.dropCollection(Book.class);
-        mongoOperations.dropCollection(Author.class);
-        mongoOperations.dropCollection(Genre.class);
-        mongoOperations.save(AUTHOR1);
-        mongoOperations.save(AUTHOR2);
-        mongoOperations.save(AUTHOR3);
-        mongoOperations.save(GENRE1);
-        mongoOperations.save(GENRE2);
+        bookRepository.deleteAll();
+        authorRepository.deleteAll();
+        genreRepository.deleteAll();
+        authorRepository.save(AUTHOR1);
+        authorRepository.save(AUTHOR2);
+        authorRepository.save(AUTHOR3);
+        genreRepository.save(GENRE1);
+        genreRepository.save(GENRE2);
         BOOK1.setAuthor(AUTHOR1);
         BOOK2.setAuthor(AUTHOR2);
         BOOK3.setAuthor(AUTHOR3);
         BOOK1.setGenre(GENRE1);
         BOOK2.setGenre(GENRE1);
         BOOK3.setGenre(GENRE2);
-        mongoOperations.save(BOOK1);
-        mongoOperations.save(BOOK2);
-        mongoOperations.save(BOOK3);
+        bookRepository.save(BOOK1);
+        bookRepository.save(BOOK2);
+        bookRepository.save(BOOK3);
     }
 
     @Test
     void findAll() {
-        Flux<Book> all = bookRepository.findAll();
-        StepVerifier
-                .create(all)
-                .assertNext(book -> assertNotNull(book.getId()))
-                .assertNext(book -> assertNotNull(book.getId()))
-                .assertNext(book -> assertNotNull(book.getId()))
-                .expectComplete()
-                .verify();
+        assertThat(bookRepository.findAll().toString()).isEqualTo(Arrays.asList(BOOK1, BOOK2, BOOK3).toString());
     }
 
     @Test
     void findById() {
-        Mono<Book> bookById = bookRepository.findById(BOOK1.getId());
-        StepVerifier
-                .create(bookById)
-                .assertNext(book -> assertThat(book.getId()).isEqualTo(BOOK1.getId()))
-                .expectComplete()
-                .verify();
+        Book book = bookRepository.findById(BOOK1.getId()).orElseThrow(() -> new NotFoundException("Book not found"));
+        assertThat(book.getId()).isEqualTo(BOOK1.getId());
     }
 
     @Test
     void getByWrongId() {
-        Mono<Book> bookById = bookRepository.findById("-1");
-        StepVerifier
-                .create(bookById)
-                .expectComplete()
-                .verify();
+        assertThrows(NotFoundException.class, () -> bookRepository.findById("-1").orElseThrow(() -> new NotFoundException("Book not found")));
     }
 
     @Test
-    void save() {
-        long sizeBeforeSave = bookRepository.findAll().toStream().count();
-        Mono<Book> bookMono = bookRepository.save(NEW_BOOK);
-        StepVerifier
-                .create(bookMono)
-                .assertNext(book -> assertNotNull(book.getId()))
-                .expectComplete()
-                .verify();
-        assertThat(bookRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave + 1);
+    void insert() {
+        int sizeBeforeInsert = bookRepository.findAll().size();
+        bookRepository.save(NEW_BOOK);
+        assertThat(bookRepository.findAll().size()).isEqualTo(sizeBeforeInsert + 1);
     }
 
     @Test
-    void saveExistBook() {
-        long sizeBeforeSave = bookRepository.findAll().toStream().count();
-        Mono<Book> bookMono = bookRepository.save(BOOK1);
-        StepVerifier
-                .create(bookMono)
-                .assertNext(book -> assertNotNull(book.getId()))
-                .expectComplete()
-                .verify();
-
-        assertThat(bookRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave);
+    void insertExistBook() {
+        int sizeBeforeInsert = bookRepository.findAll().size();
+        bookRepository.save(BOOK1);
+        assertThat(bookRepository.findAll().size()).isEqualTo(sizeBeforeInsert);
     }
 
     @Test
     void deleteById() {
-        long sizeBeforeDelete = bookRepository.findAll().toStream().count();
-        Mono<Void> deleteById = bookRepository.deleteById(BOOK1.getId());
-        StepVerifier
-                .create(deleteById)
-                .verifyComplete();
-        assertThat(bookRepository.findAll().toStream().count()).isEqualTo(sizeBeforeDelete - 1);
+        int sizeBeforeDelete = bookRepository.findAll().size();
+        bookRepository.deleteById(BOOK1.getId());
+        assertThat(bookRepository.findAll().size()).isEqualTo(sizeBeforeDelete - 1);
     }
 
     @Test
     void getByAuthorId() {
-        Flux<Book> byAuthorId = bookRepository.findByAuthorId(AUTHOR1.getId());
-        StepVerifier
-                .create(byAuthorId)
-                .assertNext(book -> assertThat(book).isEqualTo(BOOK1))
-                .expectComplete()
-                .verify();
+        assertThat(bookRepository.findByAuthorId(AUTHOR1.getId()).toString()).isEqualTo(Arrays.asList(BOOK1).toString());
     }
 
     @Test
     void getByGenreId() {
-        Flux<Book> byGenreId = bookRepository.findByGenreId(GENRE1.getId());
-        StepVerifier
-                .create(byGenreId)
-                .assertNext(book -> assertThat(book).isEqualTo(BOOK1))
-                .assertNext(book -> assertThat(book).isEqualTo(BOOK2))
-                .expectComplete()
-                .verify();
+        assertThat(bookRepository.findByGenreId(GENRE1.getId()).toString()).isEqualTo(Arrays.asList(BOOK1, BOOK2).toString());
     }
 
     @Test
     @DisplayName("При удалении автора он должен удалиться из книги")
     void deleteAuthor() {
-        bookRepository.deleteAll().block();
-        authorRepository.deleteAll().block();
+        bookRepository.deleteAll();
+        authorRepository.deleteAll();
 
-        Author newAuthor = authorRepository.save(new Author("new author")).block();
-        Genre newGenre = genreRepository.save(new Genre("new genre")).block();
-        bookRepository.save(new Book("new Book", newAuthor, newGenre)).block();
+        Author newAuthor = authorRepository.save(new Author("new author"));
+        Genre newGenre = genreRepository.save(new Genre("new genre"));
 
-        Author authorWithId = authorRepository.findAll().blockFirst();
-        Book bookWithId = bookRepository.findAll().blockFirst();
-        assertThat(bookWithId.getAuthor().getId()).isEqualTo(authorWithId.getId());
+        bookRepository.save(new Book("new Book", newAuthor, newGenre));
 
-        authorRepository.deleteById(authorWithId.getId()).block();
+        Book book = bookRepository.findAll().get(0);
+        Author author = authorRepository.findAll().get(0);
+        assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
 
-        Mono<Book> bookById = bookRepository.findById(bookWithId.getId());
-        Flux<Author> authors = authorRepository.findAll();
-        StepVerifier
-                .create(authors)
-                .verifyComplete();
-        StepVerifier
-                .create(bookById)
-                .assertNext(book -> assertThat(book.getAuthor()).isEqualTo(null))
-                .expectComplete()
-                .verify();
+        authorRepository.deleteById(author.getId());
+
+        Optional<Book> byId = bookRepository.findById(book.getId());
+
+        assertThat(authorRepository.findAll().size()).isEqualTo(0);
+        assertThat(byId.get().getAuthor()).isEqualTo(null);
     }
 
     @Test
     @DisplayName("При удалении жанра он должен удалиться из книги")
     void deleteGenre() {
-        bookRepository.deleteAll().block();
-        genreRepository.deleteAll().block();
+        bookRepository.deleteAll();
+        genreRepository.deleteAll();
 
-        Author newAuthor = authorRepository.save(new Author("new author")).block();
-        Genre newGenre = genreRepository.save(new Genre("new genre")).block();
-        bookRepository.save(new Book("new Book", newAuthor, newGenre)).block();
+        Author newAuthor = authorRepository.save(new Author("new author"));
+        Genre newGenre = genreRepository.save(new Genre("new genre"));
 
-        Genre genreWithId = genreRepository.findAll().blockFirst();
-        Book bookWithId = bookRepository.findAll().blockFirst();
-        assertThat(bookWithId.getGenre().getId()).isEqualTo(genreWithId.getId());
+        bookRepository.save(new Book("new Book", newAuthor, newGenre));
 
-        genreRepository.deleteById(genreWithId.getId()).block();
+        Book book = bookRepository.findAll().get(0);
+        Genre genre = genreRepository.findAll().get(0);
+        assertThat(book.getGenre().getId()).isEqualTo(genre.getId());
 
-        Mono<Book> bookById = bookRepository.findById(bookWithId.getId());
-        Flux<Genre> genres = genreRepository.findAll();
-        StepVerifier
-                .create(genres)
-                .verifyComplete();
-        StepVerifier
-                .create(bookById)
-                .assertNext(book -> assertThat(book.getGenre()).isEqualTo(null))
-                .expectComplete()
-                .verify();
+        genreRepository.deleteById(genre.getId());
+
+        Optional<Book> byId = bookRepository.findById(book.getId());
+
+        assertThat(genreRepository.findAll().size()).isEqualTo(0);
+        assertThat(byId.get().getGenre()).isEqualTo(null);
     }
 
     @Test
     @DisplayName("При изменении имени автора он должен измениться в книге")
     void changeAuthorName() {
-        bookRepository.deleteAll().block();
-        authorRepository.deleteAll().block();
+        bookRepository.deleteAll();
+        authorRepository.deleteAll();
 
-        Author newAuthor = authorRepository.save(new Author("new author")).block();
-        Genre newGenre = genreRepository.save(new Genre("new genre")).block();
-        bookRepository.save(new Book("new Book", newAuthor, newGenre)).block();
+        Author newAuthor = authorRepository.save(new Author("new author"));
+        Genre newGenre = genreRepository.save(new Genre("new genre"));
 
-        Author authorWithId = authorRepository.findAll().blockFirst();
-        Book bookWithId = bookRepository.findAll().blockFirst();
-        assertThat(bookWithId.getAuthor().getId()).isEqualTo(authorWithId.getId());
+        bookRepository.save(new Book("new Book", newAuthor, newGenre));
 
-        authorWithId.setName("New name author");
-        Author savedAuthor = authorRepository.save(authorWithId).block();
-        Flux<Book> findByAuthorId = bookRepository.findByAuthorId(savedAuthor.getId());
-        StepVerifier
-                .create(findByAuthorId)
-                .assertNext(book -> assertThat(book.getAuthor().getName()).isEqualTo(authorWithId.getName()))
-                .expectComplete()
-                .verify();
+        Book book = bookRepository.findAll().get(0);
+        Author author = authorRepository.findAll().get(0);
+        assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
+
+        author.setName("New name author");
+        authorRepository.save(author);
+        Author author1 = authorRepository.findAll().get(0);
+
+        List<Book> byAuthorId = bookRepository.findByAuthorId(author1.getId());
+        assertThat(byAuthorId.get(0).getAuthor().getName()).isEqualTo(author1.getName());
     }
-
 }
+

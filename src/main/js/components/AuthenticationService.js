@@ -2,7 +2,8 @@ import axios from 'axios'
 
 const API_URL = ''
 
-export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
+export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser';
+export const IS_USER_ADMIN = 'false';
 
 class AuthenticationService {
 
@@ -14,17 +15,35 @@ class AuthenticationService {
     }
 
     registerSuccessfulLoginForJwt(username, token) {
-        sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username)
-        this.setupAxiosInterceptors(this.createJWTToken(token))
+        sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username);
+        this.setupAxiosInterceptors(this.createJWTToken(token));
+        this.setupIsAdmin(token);
     }
 
     createJWTToken(token) {
         return 'Bearer ' + token
     }
 
+    setupIsAdmin(token) {
+        axios.get(`${API_URL}/isadmin`, {
+            },{
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }}
+        )  .then(response => {
+            sessionStorage.setItem(IS_USER_ADMIN, response.data)
+        });
+    }
+
+    isUserAdmin() {
+        let isAdmin = sessionStorage.getItem(IS_USER_ADMIN);
+        if (isAdmin === null) return false;
+        return isAdmin;
+    }
 
     logout() {
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        sessionStorage.removeItem(IS_USER_ADMIN);
     }
 
     isUserLoggedIn() {

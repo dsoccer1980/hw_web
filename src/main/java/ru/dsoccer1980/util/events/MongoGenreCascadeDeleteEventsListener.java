@@ -18,7 +18,7 @@ public class MongoGenreCascadeDeleteEventsListener extends AbstractMongoEventLis
     public void onAfterDelete(AfterDeleteEvent<Genre> event) {
         super.onAfterDelete(event);
         val source = event.getSource();
-        val id = source.get("id").toString();
+        val id = source.get("_id").toString();
         bookRepository.removeGenreArrayElementsById(id);
     }
 }

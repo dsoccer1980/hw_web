@@ -8,15 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Genre;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static ru.dsoccer1980.TestData.GENRE1;
-import static ru.dsoccer1980.TestData.GENRE2;
+import static ru.dsoccer1980.TestData.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -37,61 +36,46 @@ public class GenreServiceTest {
 
     @Test
     void getAll() {
-        Flux<Genre> genres = genreService.getAll();
-        StepVerifier
-                .create(genres)
-                .assertNext(genre -> assertThat(genre).isEqualTo(GENRE1))
-                .assertNext(genre -> assertThat(genre).isEqualTo(GENRE2))
-                .expectComplete()
-                .verify();
+        List<Genre> genres = genreService.getAll();
+        assertThat(genres.toString()).isEqualTo(Arrays.asList(GENRE1, GENRE2).toString());
     }
-
 
     @Test
     void get() {
-        Mono<Genre> genreMono = genreService.get(GENRE1.getId());
-        StepVerifier
-                .create(genreMono)
-                .assertNext(genre -> assertThat(genre).isEqualTo(GENRE1))
-                .expectComplete()
-                .verify();
+        Genre genre = genreService.get(GENRE1.getId());
+        assertThat(genre).isEqualTo(GENRE1);
+    }
+
+    @Test
+    void save() {
+        genreService.save(NEW_GENRE);
+        List<Genre> genres = genreService.getAll();
+        assertThat(genres.toString()).isEqualTo(Arrays.asList(GENRE1, GENRE2, NEW_GENRE).toString());
     }
 
     @Test
     void addNewGenre() {
         Genre newGenre = new Genre("Новый жанр");
-        Mono<Genre> genreMono = genreService.save(newGenre);
-        StepVerifier
-                .create(genreMono)
-                .assertNext(genre -> assertNotNull(genre.getId()))
-                .expectComplete()
-                .verify();
+        genreService.save(newGenre);
+        List<String> genres = genreService.getAll().stream().map(Genre::getName).collect(Collectors.toList());
+        assertThat(genres.toString()).isEqualTo(Arrays.asList(GENRE1.getName(), GENRE2.getName(), newGenre.getName()).toString());
     }
 
     @Test
     void updateExistGenre() {
-        Genre genreForUpdate = genreService.get(GENRE1.getId()).block();
-        genreForUpdate.setName("Новое имя");
-        Mono<Genre> genreMono = genreService.save(genreForUpdate);
-        StepVerifier
-                .create(genreMono)
-                .assertNext(genre -> assertThat(genre.getName()).isEqualTo(genreForUpdate.getName()))
-                .expectComplete()
-                .verify();
+        Genre genre = genreService.get(GENRE1.getId());
+        genre.setName("Новое имя");
+        genreService.save(genre);
+        List<Genre> genres = genreService.getAll();
+        assertThat(genres.toString()).isEqualTo(Arrays.asList(genre, GENRE2).toString());
     }
 
     @Test
     void delete() {
-        Mono<Void> deleteMono = genreService.delete(GENRE1.getId());
-        StepVerifier
-                .create(deleteMono)
-                .verifyComplete();
-
-        Flux<Genre> genres = genreService.getAll();
-        StepVerifier
-                .create(genres)
-                .assertNext(genre -> assertThat(genre).isEqualTo(GENRE2))
-                .expectComplete()
-                .verify();
+        genreService.delete(GENRE1.getId());
+        List<Genre> genres = genreService.getAll();
+        assertThat(genres.toString()).isEqualTo(Arrays.asList(GENRE2).toString());
     }
+
+
 }

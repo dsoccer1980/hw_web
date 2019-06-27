@@ -1,17 +1,17 @@
 package ru.dsoccer1980.service;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Genre;
+
+import java.util.List;
 
 public interface GenreService {
 
-    Flux<Genre> getAll();
+    List<Genre> getAll();
 
-    Mono<Genre> get(String id);
+    Genre get(String id);
 
-    Mono<Genre> save(Genre genre);
+    Genre save(Genre genre);
 
-    Mono<Void> delete(String id);
+    void delete(String id);
 
 }

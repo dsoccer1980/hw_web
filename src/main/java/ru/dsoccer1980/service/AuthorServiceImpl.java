@@ -2,10 +2,11 @@ package ru.dsoccer1980.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.repository.AuthorRepository;
+import ru.dsoccer1980.util.exception.NotFoundException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,17 +15,17 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    public Flux<Author> getAll() {
+    public List<Author> getAll() {
         return authorRepository.findAll();
     }
 
     @Override
-    public Mono<Author> get(String id) {
-        return authorRepository.findById(id);
+    public Author get(String id) {
+        return authorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public Mono<Author> save(Author author) {
+    public Author save(Author author) {
         if (author.getId() == null || author.getId().equals("")) {
             author = new Author(author.getName());
         }
@@ -32,8 +33,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Mono<Void> delete(String id) {
-        return authorRepository.deleteById(id);
+    public void delete(String id) {
+        authorRepository.deleteById(id);
     }
 
 }

@@ -1,12 +1,13 @@
 package ru.dsoccer1980.repository;
 
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.dsoccer1980.domain.User;
 
-public interface UserRepository extends ReactiveMongoRepository<User, Long> {
+import java.util.Optional;
 
-    Mono<User> findByUsername(String username);
+public interface UserRepository extends MongoRepository<User, Long> {
+
+    Optional<User> findByUsername(String username);
 
 }

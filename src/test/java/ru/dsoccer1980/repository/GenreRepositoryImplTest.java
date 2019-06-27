@@ -3,124 +3,83 @@ package ru.dsoccer1980.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import ru.dsoccer1980.domain.Genre;
+import ru.dsoccer1980.util.exception.NotFoundException;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static ru.dsoccer1980.TestData.GENRE1;
-import static ru.dsoccer1980.TestData.GENRE2;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.dsoccer1980.TestData.*;
 
 
 public class GenreRepositoryImplTest extends AbstractRepositoryTest {
-
-    @Autowired
-    MongoOperations mongoOperations;
 
     @Autowired
     private GenreRepository genreRepository;
 
     @BeforeEach
     void populateData() {
-        mongoOperations.dropCollection(Genre.class);
-        mongoOperations.save(GENRE1);
-        mongoOperations.save(GENRE2);
+        genreRepository.deleteAll();
+        genreRepository.save(GENRE1);
+        genreRepository.save(GENRE2);
     }
 
     @Test
-    void findAll() {
-        Flux<Genre> all = genreRepository.findAll();
-        StepVerifier
-                .create(all)
-                .assertNext(genre -> assertNotNull(genre.getId()))
-                .assertNext(genre -> assertNotNull(genre.getId()))
-                .expectComplete()
-                .verify();
+    void getAll() {
+        assertThat(genreRepository.findAll().toString()).isEqualTo(Arrays.asList(GENRE1, GENRE2).toString());
     }
 
     @Test
-    void findById() {
-        Mono<Genre> genreById = genreRepository.findById(GENRE2.getId());
-        StepVerifier
-                .create(genreById)
-                .assertNext(genre -> assertThat(genre.getId()).isEqualTo(GENRE2.getId()))
-                .expectComplete()
-                .verify();
+    void getById() {
+        Genre genre = genreRepository.findById(GENRE1.getId()).orElseThrow(() -> new NotFoundException("Genre not found"));
+        assertThat(genre.getId()).isEqualTo(GENRE1.getId());
     }
 
     @Test
     void getByWrongId() {
-        Mono<Genre> genreById = genreRepository.findById("-1");
-        StepVerifier
-                .create(genreById)
-                .verifyComplete();
+        assertThrows(NotFoundException.class, () -> genreRepository.findById("-1").orElseThrow(() -> new NotFoundException("Genre not found")));
     }
 
     @Test
-    void save() {
-        Mono<Genre> genreMono = genreRepository.save(new Genre("New genre"));
-        StepVerifier
-                .create(genreMono)
-                .assertNext(genre -> assertNotNull(genre.getId()))
-                .expectComplete()
-                .verify();
+    void insert() {
+        int sizeBeforeInsert = genreRepository.findAll().size();
+        Genre insertedGenre = genreRepository.save(NEW_GENRE);
+        assertThat(insertedGenre.getName()).isEqualTo(NEW_GENRE.getName());
+        assertThat(genreRepository.findAll().size()).isEqualTo(sizeBeforeInsert + 1);
     }
 
-
     @Test
-    void saveExistGenre() {
-        long sizeBeforeSave = genreRepository.findAll().toStream().count();
-        Mono<Genre> genreMono = genreRepository.save(GENRE1);
-        StepVerifier
-                .create(genreMono)
-                .assertNext(genre -> assertNotNull(genre.getId()))
-                .expectComplete()
-                .verify();
-
-        assertThat(genreRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave);
+    void insertExistGenre() {
+        int sizeBeforeInsert = genreRepository.findAll().size();
+        Genre insertedGenre = genreRepository.save(GENRE1);
+        assertThat(insertedGenre.getName()).isEqualTo(GENRE1.getName());
+        assertThat(genreRepository.findAll().size()).isEqualTo(sizeBeforeInsert);
     }
 
     @Test
     void deleteById() {
-        long sizeBeforeSave = genreRepository.findAll().toStream().count();
-        Mono<Void> deleteById = genreRepository.deleteById(GENRE2.getId());
-        StepVerifier
-                .create(deleteById)
-                .verifyComplete();
-        assertThat(genreRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave - 1);
+        int sizeBeforeDelete = genreRepository.findAll().size();
+        genreRepository.deleteById(GENRE1.getId());
+        assertThat(genreRepository.findAll().size()).isEqualTo(sizeBeforeDelete - 1);
     }
 
     @Test
     void deleteByWrongId() {
-        long sizeBeforeSave = genreRepository.findAll().toStream().count();
-        Mono<Void> deleteById = genreRepository.deleteById("123456789012345678901234");
-        StepVerifier
-                .create(deleteById)
-                .verifyComplete();
-        Flux<Genre> all = genreRepository.findAll();
-
-        assertThat(genreRepository.findAll().toStream().count()).isEqualTo(sizeBeforeSave);
+        int sizeBeforeDelete = genreRepository.findAll().size();
+        genreRepository.deleteById("123456789012345678901234");
+        assertThat(genreRepository.findAll().size()).isEqualTo(sizeBeforeDelete);
     }
 
     @Test
-    void findByName() {
-        Mono<Genre> genreByName = genreRepository.findByName(GENRE1.getName());
-        StepVerifier
-                .create(genreByName)
-                .assertNext(genre -> assertThat(genre.getName()).isEqualTo(GENRE1.getName()))
-                .expectComplete()
-                .verify();
+    void getByName() {
+        Genre author = genreRepository.findByName(GENRE1.getName()).orElseThrow(() -> new NotFoundException("Genre not found"));
+        assertThat(author.toString()).isEqualTo(GENRE1.toString());
     }
 
     @Test
     void getByWrongName() {
-        Mono<Genre> genreByWrongName = genreRepository.findByName("Wrong name");
-        StepVerifier
-                .create(genreByWrongName)
-                .verifyComplete();
+        assertThrows(NotFoundException.class, () -> genreRepository.findByName("Wrong name").orElseThrow(() -> new NotFoundException("Genre not found")));
     }
 
 

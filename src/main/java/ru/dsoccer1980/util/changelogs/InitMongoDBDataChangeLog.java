@@ -21,6 +21,7 @@ public class InitMongoDBDataChangeLog {
     private static final Book BOOK2 = new Book("100000000000000000000101", "Машина времени", AUTHOR2, GENRE1);
     private static final Book BOOK3 = new Book("100000000000000000000102", "Онегин", AUTHOR3, GENRE2);
     private static final User USER1 = new User(1L, "admin", new BCryptPasswordEncoder().encode("password"), Set.of(Role.ADMIN));
+    private static final User USER2 = new User(2L, "user", new BCryptPasswordEncoder().encode("password"), Set.of(Role.USER));
     private Author springDataAuthor;
     private Genre springDataGenre;
     private Book springDataBook;
@@ -54,6 +55,7 @@ public class InitMongoDBDataChangeLog {
     @ChangeSet(order = "004", id = "initUsers", author = "stvort", runAlways = true)
     public void initUsers(MongoTemplate template) {
         springDataUser = template.save(USER1);
+        springDataUser = template.save(USER2);
 
     }
 }
