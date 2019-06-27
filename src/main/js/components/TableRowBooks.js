@@ -9,13 +9,10 @@ export default class TableRowBooks extends Component {
         super(props);
     }
 
-
     render() {
         const isAdmin = AuthenticationService.isUserAdmin();
         const {obj} = this.props;
 
-        var authorNameProp = obj.author != null ? this.props.obj.author.name : "";
-        var genreNameProp = obj.genre != null ? obj.genre.name : "";
         return (
             <tr>
                 <td>
@@ -25,7 +22,7 @@ export default class TableRowBooks extends Component {
                     {obj.author != null ? obj.author.name : ""}
                 </td>
                 <td>
-                    {genreNameProp}
+                    {obj.genre != null ? obj.genre.name : ""}
                 </td>
                 <td>
                     {isAdmin === 'true' &&
