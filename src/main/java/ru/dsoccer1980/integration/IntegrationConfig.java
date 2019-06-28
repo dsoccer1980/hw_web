@@ -16,7 +16,7 @@ import org.springframework.integration.scheduling.PollerMetadata;
 public class IntegrationConfig {
     @Bean
     public QueueChannel itemsChannel() {
-        return MessageChannels.queue(10).get();
+        return MessageChannels.queue(100).get();
     }
 
     @Bean
@@ -26,7 +26,7 @@ public class IntegrationConfig {
 
     @Bean(name = PollerMetadata.DEFAULT_POLLER)
     public PollerMetadata poller() {
-        return Pollers.fixedRate(100).maxMessagesPerPoll(2).get();
+        return Pollers.fixedRate(100).maxMessagesPerPoll(100).get();
     }
 
     @Bean
