@@ -2,7 +2,7 @@ package ru.dsoccer1980.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.dsoccer1980.domain.Book;
+import ru.dsoccer1980.dto.BookDto;
 import ru.dsoccer1980.util.config.YamlProps;
 
 import java.io.BufferedReader;
@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @Service
 public class BookFilterService {
@@ -29,12 +30,12 @@ public class BookFilterService {
         REPLACING_STRING = yamlProps.getReplacingString();
     }
 
-    public Book filter(Book book) {
+    public BookDto filter(BookDto book) {
         Set<String> bannedWords = getBannedWordsList();
-        String bookName = book.getName().toLowerCase();
+        String lowerCaseBookName = book.getName().toLowerCase();
         bannedWords.stream()
-                .filter(bookName::contains)
-                .forEach(word -> book.setName(bookName.replaceAll(word, REPLACING_STRING)));
+                .filter(lowerCaseBookName::contains)
+                .forEach(word -> book.setName(book.getName().replaceAll("(?i)" + Pattern.quote(word), REPLACING_STRING)));
         return book;
     }
 
