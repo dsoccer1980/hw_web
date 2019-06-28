@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.domain.Genre;
+import ru.dsoccer1980.integration.BookGateway;
 import ru.dsoccer1980.repository.AuthorRepository;
 import ru.dsoccer1980.repository.BookRepository;
 import ru.dsoccer1980.repository.GenreRepository;
@@ -19,6 +20,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final BookGateway bookGateway;
 
     @Override
     public List<Book> getAll() {
@@ -38,6 +40,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book book, String authorId, String genreId) {
+        bookGateway.process(book);
+
         if (book.getId() == null || book.getId().equals("")) {
             book = new Book(book.getName(), book.getAuthor(), book.getGenre());
         }
