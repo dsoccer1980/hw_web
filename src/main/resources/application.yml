@@ -15,3 +15,6 @@ jwt:
     expiration:
       in:
         seconds: 604800
+props:
+  bannedWordsFilename: banned_words.txt
+  replacingString: XXX

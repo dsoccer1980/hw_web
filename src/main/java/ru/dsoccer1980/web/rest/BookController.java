@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.dsoccer1980.domain.Book;
 import ru.dsoccer1980.dto.BookDto;
+import ru.dsoccer1980.integration.BookGateway;
 import ru.dsoccer1980.service.BookService;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
+    private final BookGateway bookGateway;
 
     @GetMapping("/book")
     public List<Book> getAll() {
@@ -28,11 +30,13 @@ public class BookController {
 
     @PutMapping(value = "/book", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Book update(@RequestBody BookDto bookDto) {
+        bookGateway.process(bookDto);
         return bookService.save(BookDto.getBook(bookDto), bookDto.getAuthorId(), bookDto.getGenreId());
     }
 
     @PostMapping(value = "/book", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Book create(@RequestBody BookDto bookDto) {
+        bookGateway.process(bookDto);
         return bookService.save(BookDto.getBook(bookDto), bookDto.getAuthorId(), bookDto.getGenreId());
     }
 
