@@ -21,6 +21,8 @@ class MenuComponent extends Component {
                             <Link to='/genre' className="nav-link">Genres</Link>
                         </li>
                         {isUserLoggedIn && <li><Link className="nav-link" to="/logout" onClick={AuthenticationService.logout}>Logout</Link></li>}
+                        <li className="nav-item"><a className="btn btn-primary" href="/myactuator">my actuator endpoints</a>
+                        </li>
                     </ul>
                 </div>
             </nav>

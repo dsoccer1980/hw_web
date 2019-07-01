@@ -54,7 +54,7 @@ public class JWTWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers(HttpMethod.GET, "/").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/actuator/**").permitAll()
+                .authorizeRequests().antMatchers("/actuator/**", "/myactuator").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, "/authenticate").permitAll()
                 .and()
