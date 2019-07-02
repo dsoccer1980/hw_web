@@ -12,6 +12,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.dsoccer1980.domain.Book;
+import ru.dsoccer1980.dto.BookDto;
+import ru.dsoccer1980.integration.BookGateway;
 import ru.dsoccer1980.repository.UserRepository;
 import ru.dsoccer1980.security.JWTWebSecurityConfig;
 import ru.dsoccer1980.security.JwtTokenUtil;
@@ -46,6 +48,9 @@ public class BookControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private BookGateway bookGateway;
 
     private static String asJsonString(final Object obj) {
         try {
@@ -114,9 +119,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     @DisplayName("Администратор может создавать книгу")
     void testPostAdmin() throws Exception {
+        BookDto bookDto = new BookDto(String.valueOf(111111111110L), "Book name", null, null, null);
+        given(bookGateway.process(bookDto)).willReturn(bookDto);
+        Book book = BookDto.getBook(bookDto);
         mvc.perform(post("/book")
                 .contentType(APPLICATION_JSON)
-                .content(asJsonString(BOOK1)))
+                .content(asJsonString(book)))
                 .andExpect(status().isOk());
     }
 
@@ -134,9 +142,12 @@ public class BookControllerTest {
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     @DisplayName("Администратор может обновлять книгу")
     void testPutAdmin() throws Exception {
+        BookDto bookDto = new BookDto(String.valueOf(111111111110L), "Book name", null, null, null);
+        given(bookGateway.process(bookDto)).willReturn(bookDto);
+        Book book = BookDto.getBook(bookDto);
         mvc.perform(put("/book")
                 .contentType(APPLICATION_JSON)
-                .content(asJsonString(BOOK1)))
+                .content(asJsonString(book)))
                 .andExpect(status().isOk());
     }
 
