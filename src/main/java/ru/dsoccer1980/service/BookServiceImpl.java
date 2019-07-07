@@ -1,6 +1,7 @@
 package ru.dsoccer1980.service;
 
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
 import ru.dsoccer1980.domain.Author;
 import ru.dsoccer1980.domain.Book;
@@ -13,12 +14,21 @@ import ru.dsoccer1980.util.exception.NotFoundException;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private final MeterRegistry registry;
+    private Counter bookSaveCounter;
+
+    public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository, GenreRepository genreRepository, MeterRegistry registry) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+        this.genreRepository = genreRepository;
+        this.registry = registry;
+        bookSaveCounter = registry.counter("services.book.save");
+    }
 
     @Override
     public List<Book> getAll() {
@@ -50,6 +60,9 @@ public class BookServiceImpl implements BookService {
             book.setGenre(genre);
         }
 
+        if (bookSaveCounter != null) {
+            bookSaveCounter.increment();
+        }
         return bookRepository.save(book);
     }
 

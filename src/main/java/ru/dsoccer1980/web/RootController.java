@@ -11,4 +11,9 @@ public class RootController {
         return "index";
     }
 
+    @RequestMapping(value = "/myactuator")
+    public String myactuator() {
+        return "myactuator";
+    }
+
 }

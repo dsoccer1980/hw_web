@@ -18,3 +18,14 @@ jwt:
 props:
   bannedWordsFilename: banned_words.txt
   replacingString: XXX
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+logging:
+  file: log/app.log

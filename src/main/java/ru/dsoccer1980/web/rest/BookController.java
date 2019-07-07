@@ -9,6 +9,7 @@ import ru.dsoccer1980.integration.BookGateway;
 import ru.dsoccer1980.service.BookService;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
@@ -30,14 +31,14 @@ public class BookController {
 
     @PutMapping(value = "/book", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Book update(@RequestBody BookDto bookDto) {
-        bookGateway.process(bookDto);
-        return bookService.save(BookDto.getBook(bookDto), bookDto.getAuthorId(), bookDto.getGenreId());
+        BookDto bookDtoFilter = Optional.of(bookGateway.process(bookDto)).orElse(bookDto);
+        return bookService.save(BookDto.getBook(bookDtoFilter), bookDtoFilter.getAuthorId(), bookDtoFilter.getGenreId());
     }
 
     @PostMapping(value = "/book", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Book create(@RequestBody BookDto bookDto) {
-        bookGateway.process(bookDto);
-        return bookService.save(BookDto.getBook(bookDto), bookDto.getAuthorId(), bookDto.getGenreId());
+        BookDto bookDtoFilter = Optional.of(bookGateway.process(bookDto)).orElse(bookDto);
+        return bookService.save(BookDto.getBook(bookDtoFilter), bookDtoFilter.getAuthorId(), bookDtoFilter.getGenreId());
     }
 
     @DeleteMapping(value = "/book")
