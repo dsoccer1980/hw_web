@@ -196,6 +196,7 @@
             </plugin>
             <!-- end::frontend-maven-plugin[] -->
         </plugins>
+        <finalName>hw_docker</finalName>
     </build>
 
 
