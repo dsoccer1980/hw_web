@@ -14,12 +14,12 @@ COPY ./node_modules/ $PROJECT_DIR/node_modules
 ADD ./src/ $PROJECT_DIR/src
 RUN mvn -B clean install -DskipTests
 
-FROM openjdk:11
+FROM openjdk:11-jdk-slim
 
 ENV PROJECT_DIR=/opt/project
 RUN mkdir -p $PROJECT_DIR
 WORKDIR $PROJECT_DIR
-COPY --from=0 $PROJECT_DIR/target $PROJECT_DIR/
+COPY --from=0 $PROJECT_DIR/target/*.jar $PROJECT_DIR/
 
 EXPOSE 8080
 
