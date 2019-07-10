@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {API_URL} from './Const';
 
 export default class CreateAuthor extends Component {
     constructor(props) {
@@ -29,7 +30,7 @@ export default class CreateAuthor extends Component {
         const obj = {
             name: this.state.name,
         };
-        axios.post('/author', JSON.stringify(obj), {
+        axios.post(`${API_URL}/author`, JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'

@@ -1,26 +1,27 @@
 import React, {Component} from 'react';
+import TableRowBooks from './TableRowBooks'
 import {Link} from 'react-router-dom';
-import TableRowAuthors from './TableRowAuthors'
-import axios from "axios";
-import AuthenticationService from './AuthenticationService';
+import axios from 'axios';
+import AuthenticationService from "./AuthenticationService";
+import {API_URL} from './Const';
 
-export default class ListAuthors extends Component {
+export default class ListBooks extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {authors: []};
+        this.state = {books: []};
     }
 
     componentDidMount() {
-        axios.get('/author')
+        axios.get(`${API_URL}/book`)
             .then(response => {
-                this.setState({authors: response.data});
+                this.setState({books: response.data});
             })
     }
 
     tabRow() {
-        return this.state.authors.map(function (object, i) {
-            return <TableRowAuthors obj={object} key={i}/>;
+        return this.state.books.map(function (object, i) {
+            return <TableRowBooks obj={object} key={i}/>;
         });
     }
 
@@ -29,11 +30,13 @@ export default class ListAuthors extends Component {
 
         return (
             <div>
-                <h3 align="center">Authors List</h3>
-                <table className="table table-striped" style={{marginTop: 20}}>
+                <h3 align="center">Books List</h3>
+                <table className="table table-striped table-hover" style={{marginTop: 20}}>
                     <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Author</th>
+                        <th>Genre</th>
                         <th colSpan="2">Action</th>
                     </tr>
                     </thead>
@@ -42,9 +45,10 @@ export default class ListAuthors extends Component {
                     </tbody>
                 </table>
                 <div>
-                    {isAdmin === 'true' && <Link to={'/createAuthor'} className="nav-link">
+                    {isAdmin === 'true' && <Link to={'/createBook'} className="nav-link">
                         <button className="btn btn-primary">Create</button>
-                    </Link>}
+                    </Link>
+                    }
                 </div>
             </div>
         );

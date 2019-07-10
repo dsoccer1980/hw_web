@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-
+import {API_URL} from './Const';
 
 export default class DeleteAuthor extends Component {
 
@@ -9,7 +9,7 @@ export default class DeleteAuthor extends Component {
     }
 
     componentDidMount() {
-        axios.delete(`/author/?id=${this.props.match.params.id}`)
+        axios.delete(`${API_URL}/author/?id=${this.props.match.params.id}`)
             .then(res => {
                 this.props.history.push('/author');
             });

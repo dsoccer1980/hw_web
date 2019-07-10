@@ -159,7 +159,7 @@
             </plugin>
 
             <!-- tag::frontend-maven-plugin[] -->
-            <plugin>
+         <!--   <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.6</version>
@@ -193,7 +193,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <!-- end::frontend-maven-plugin[] -->
         </plugins>
         <finalName>hw_docker</finalName>

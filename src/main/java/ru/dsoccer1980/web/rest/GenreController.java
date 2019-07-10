@@ -8,7 +8,7 @@ import ru.dsoccer1980.service.GenreService;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"http://localhost:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.99.100:3000"})
 @RestController
 @RequiredArgsConstructor
 public class GenreController {

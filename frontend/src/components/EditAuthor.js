@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from "axios";
+import {API_URL} from './Const';
 
 export default class EditAuthor extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export default class EditAuthor extends Component {
     }
 
     componentDidMount() {
-        axios.get(`/author/${this.props.match.params.id}`)
+        axios.get(`${API_URL}/author/${this.props.match.params.id}`)
             .then(response => {
                 this.setState({
                     id: response.data.id,
@@ -41,7 +42,7 @@ export default class EditAuthor extends Component {
             id: this.state.id,
             name: this.state.name,
         };
-        axios.put('/author', JSON.stringify(obj), {
+        axios.put(`${API_URL}/author`, JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'

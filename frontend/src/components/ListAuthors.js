@@ -1,26 +1,27 @@
 import React, {Component} from 'react';
-import TableRowGenres from './TableRowGenres'
 import {Link} from 'react-router-dom';
+import TableRowAuthors from './TableRowAuthors'
 import axios from "axios";
-import AuthenticationService from "./AuthenticationService";
+import AuthenticationService from './AuthenticationService';
+import {API_URL} from './Const';
 
-export default class ListGenres extends Component {
+export default class ListAuthors extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {genres: []};
+        this.state = {authors: []};
     }
 
     componentDidMount() {
-        axios.get('/genre')
+        axios.get(`${API_URL}/author`)
             .then(response => {
-                this.setState({genres: response.data});
+                this.setState({authors: response.data});
             })
     }
 
     tabRow() {
-        return this.state.genres.map(function (object, i) {
-            return <TableRowGenres obj={object} key={i}/>;
+        return this.state.authors.map(function (object, i) {
+            return <TableRowAuthors obj={object} key={i}/>;
         });
     }
 
@@ -29,7 +30,7 @@ export default class ListGenres extends Component {
 
         return (
             <div>
-                <h3 align="center">Genres List</h3>
+                <h3 align="center">Authors List</h3>
                 <table className="table table-striped" style={{marginTop: 20}}>
                     <thead>
                     <tr>
@@ -41,9 +42,11 @@ export default class ListGenres extends Component {
                     {this.tabRow()}
                     </tbody>
                 </table>
-                {isAdmin === 'true' && <Link to={'/createGenre'} className="nav-link">
-                    <button className="btn btn-primary">Create</button>
-                </Link>}
+                <div>
+                    {isAdmin === 'true' && <Link to={'/createAuthor'} className="nav-link">
+                        <button className="btn btn-primary">Create</button>
+                    </Link>}
+                </div>
             </div>
         );
     }

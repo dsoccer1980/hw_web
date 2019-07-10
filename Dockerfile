@@ -6,11 +6,9 @@ RUN mkdir -p $PROJECT_DIR
 WORKDIR $PROJECT_DIR
 
 ADD ./pom.xml $PROJECT_DIR
-COPY ./package.json $PROJECT_DIR
-COPY ./webpack.config.js $PROJECT_DIR
+
 RUN mvn dependency:resolve
 
-COPY ./node_modules/ $PROJECT_DIR/node_modules
 ADD ./src/ $PROJECT_DIR/src
 RUN mvn -B clean install -DskipTests
 

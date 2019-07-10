@@ -3,7 +3,6 @@ spring:
     mongodb:
       port: 27017
       database: proddb
-      host: 192.168.99.100
 
 jwt:
   signing:
