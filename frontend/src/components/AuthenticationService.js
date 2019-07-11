@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
+import {API_URL} from './Const'
 
-const API_URL = ''
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser';
 export const IS_USER_ADMIN = 'false';

@@ -1,13 +1,11 @@
-var webpack = require('webpack');
-var path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+var path = require('path');
 
 module.exports = {
-    entry: './src/main/js/index.js',
+    entry: './src/index.js',
     output: {
         path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
+        filename: './src/built/bundle.js'
     },
     module: {
         rules: [

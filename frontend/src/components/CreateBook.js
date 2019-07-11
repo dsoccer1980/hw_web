@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import SelectShow from './SelectShow';
-import axios from "axios";
+import axios from 'axios';
+import {API_URL} from './Const';
 
 
-export default class EditBook extends Component {
+export default class CreateBook extends Component {
 
     constructor(props) {
         super(props);
@@ -12,7 +13,6 @@ export default class EditBook extends Component {
         this.onCancelClick = this.onCancelClick.bind(this);
 
         this.state = {
-            id: '',
             name: '',
             authorId: '',
             authors: [],
@@ -22,31 +22,14 @@ export default class EditBook extends Component {
     }
 
     componentDidMount() {
-        axios.get(`/book/${this.props.match.params.id}`)
+        axios.get(`${API_URL}/author`)
             .then(response => {
-                this.setState({
-                    id: response.data.id,
-                    name: response.data.name,
-                    authorId: response.data.author != null ? response.data.author.id : '',
-                    genreId: response.data.genre != null ? response.data.genre.id : ''
-                });
+                this.setState({authors: response.data});
             });
-
-        axios.get('/author')
+        axios.get(`${API_URL}/genre`)
             .then(response => {
-                this.setState({
-                    authors: response.data,
-                });
-            });
-
-        axios.get('/genre')
-            .then(response => {
-                this.setState({
-                    genres: response.data,
-                });
-            });
-
-
+                this.setState({genres: response.data});
+            })
     }
 
     onChangeName(e) {
@@ -58,12 +41,11 @@ export default class EditBook extends Component {
     onSubmit(e) {
         e.preventDefault();
         const obj = {
-            id: this.state.id,
             name: this.state.name,
             authorId: this.state.authorId,
             genreId: this.state.genreId
         };
-        axios.put('/book', JSON.stringify(obj), {
+        axios.post(`${API_URL}/book`, JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -72,8 +54,6 @@ export default class EditBook extends Component {
             .then(res => {
                 this.props.history.push('/book');
             });
-
-
     }
 
     onCancelClick(e) {
@@ -101,15 +81,11 @@ export default class EditBook extends Component {
         this.setState({genreId: e.currentTarget.value})
     }
 
-
     render() {
         return (
             <div style={{marginTop: 10}}>
-                <h3 align="center">Update Book</h3>
+                <h3 align="center">Create Book</h3>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <input type="hidden" className="form-control" value={this.state.id}/>
-                    </div>
                     <div className="form-group">
                         <label>Book Name: </label>
                         <input type="text" className="form-control" value={this.state.name}
@@ -133,14 +109,13 @@ export default class EditBook extends Component {
                                 name="genreId"
                                 onChange={this.changeSelectGenre}
                                 value={this.state.genreId}>
-
                             <option disabled value="">Выберите жанр</option>
-
                             {this.tabRowGenre()}
+
                         </select>
                     </div>
                     <div className="form-group">
-                        <input type="submit" value="Update" className="btn btn-primary"/> &nbsp;
+                        <input type="submit" value="Create" className="btn btn-primary"/> &nbsp;
                         <button type="button" className="btn btn-secondary" onClick={this.onCancelClick}>Cancel</button>
                     </div>
                 </form>

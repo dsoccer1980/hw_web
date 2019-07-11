@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import axios from "axios";
+import {API_URL} from './Const';
 
-export default class CreateGenre extends Component {
+export default class EditGenre extends Component {
+
     constructor(props) {
         super(props);
         this.onChangeName = this.onChangeName.bind(this);
@@ -9,8 +11,22 @@ export default class CreateGenre extends Component {
         this.onCancelClick = this.onCancelClick.bind(this);
 
         this.state = {
+            id: '',
             name: '',
         }
+    }
+
+    componentDidMount() {
+        axios.get(`${API_URL}/genre/${this.props.match.params.id}`)
+            .then(response => {
+                this.setState({
+                    id: response.data.id,
+                    name: response.data.name
+                });
+            })
+            .catch(function (error) {
+                this.setState({error});
+            })
     }
 
     onChangeName(e) {
@@ -19,7 +35,7 @@ export default class CreateGenre extends Component {
         })
     }
 
-    onCancelClick(e){
+    onCancelClick(e) {
         e.preventDefault();
         this.props.history.push('/genre');
     }
@@ -27,9 +43,10 @@ export default class CreateGenre extends Component {
     onSubmit(e) {
         e.preventDefault();
         const obj = {
+            id: this.state.id,
             name: this.state.name,
         };
-        axios.post('/genre', JSON.stringify(obj), {
+        axios.put(`${API_URL}/genre`, JSON.stringify(obj), {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -38,22 +55,24 @@ export default class CreateGenre extends Component {
             .then(res => {
                 this.props.history.push('/genre');
             });
+
     }
 
     render() {
         return (
             <div style={{ marginTop: 10 }}>
-                <h3 align="center">Create Genre</h3>
+                <h3 align="center">Update genre</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Genre Name: </label>
+                        <input type="hidden" className="form-control" value={this.state.id} />
+                    </div>
+                    <div className="form-group">
+                        <label>genre Name: </label>
                         <input type="text" className="form-control" value={this.state.name} onChange={this.onChangeName} />
                     </div>
-                    <div className="row">
                     <div className="form-group">
-                        <input type="submit" value="Create" className="btn btn-primary" /> &nbsp;
+                        <input type="submit" value="Update" className="btn btn-primary" /> &nbsp;
                         <button type="button" className="btn btn-secondary" onClick={this.onCancelClick}>Cancel</button>
-                    </div>
                     </div>
                 </form>
             </div>

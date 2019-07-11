@@ -11,7 +11,7 @@ import ru.dsoccer1980.service.BookService;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.99.100:3000"})
 @RestController
 @RequiredArgsConstructor
 public class BookController {

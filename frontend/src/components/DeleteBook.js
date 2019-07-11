@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from "axios";
+import {API_URL} from './Const';
 
 
 export default class DeleteBook extends Component {
@@ -9,7 +10,7 @@ export default class DeleteBook extends Component {
     }
 
     componentDidMount() {
-        axios.delete(`/book/?id=${this.props.match.params.id}`)
+        axios.delete(`${API_URL}/book/?id=${this.props.match.params.id}`)
             .then(res => {
                 this.props.history.push('/book');
             });

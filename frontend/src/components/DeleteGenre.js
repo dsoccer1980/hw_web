@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from "axios";
-
+import {API_URL} from './Const';
 
 export default class DeleteGenre extends Component {
 
@@ -9,7 +9,7 @@ export default class DeleteGenre extends Component {
     }
 
     componentDidMount() {
-        axios.delete(`/genre/?id=${this.props.match.params.id}`)
+        axios.delete(`${API_URL}/genre/?id=${this.props.match.params.id}`)
             .then(res => {
                 this.props.history.push('/genre');
             });
