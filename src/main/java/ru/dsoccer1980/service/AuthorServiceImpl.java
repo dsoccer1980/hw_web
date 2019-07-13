@@ -1,5 +1,6 @@
 package ru.dsoccer1980.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.dsoccer1980.domain.Author;
@@ -14,6 +15,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
+    @HystrixCommand(fallbackMethod = "getDefaultAuthors", groupKey = "AuthorService", commandKey = "getAll")
     @Override
     public List<Author> getAll() {
         return authorRepository.findAll();
@@ -36,5 +38,10 @@ public class AuthorServiceImpl implements AuthorService {
     public void delete(String id) {
         authorRepository.deleteById(id);
     }
+
+    private List<Author> getDefaultAuthors() {
+        return List.of(new Author("Любимый автор"));
+    }
+
 
 }

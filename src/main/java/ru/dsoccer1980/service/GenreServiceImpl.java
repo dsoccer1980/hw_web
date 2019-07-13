@@ -1,5 +1,6 @@
 package ru.dsoccer1980.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.dsoccer1980.domain.Genre;
@@ -14,6 +15,7 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
 
+    @HystrixCommand(fallbackMethod = "getDefaultGenres", groupKey = "GenreService", commandKey = "getAll")
     @Override
     public List<Genre> getAll() {
         return genreRepository.findAll();
@@ -36,5 +38,10 @@ public class GenreServiceImpl implements GenreService {
     public void delete(String id) {
         genreRepository.deleteById(id);
     }
+
+    private List<Genre> getDefaultGenres() {
+        return List.of(new Genre("Любимый жанр"));
+    }
+
 
 }

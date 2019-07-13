@@ -1,9 +1,12 @@
 package ru.dsoccer1980.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.dsoccer1980.domain.Role;
@@ -21,7 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
+    @HystrixCommand(fallbackMethod = "getDefaultUser", groupKey = "UserService", commandKey = "getUser", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
+    })
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -62,6 +67,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         userRepository.save(user);
+    }
+
+    private UserDetails getDefaultUser(String username) {
+        return new User(3L, username, new BCryptPasswordEncoder().encode("pass"), Set.of(Role.ANONYM));
     }
 
 

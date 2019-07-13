@@ -1,5 +1,6 @@
 package ru.dsoccer1980.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class BookServiceImpl implements BookService {
         bookSaveCounter = registry.counter("services.book.save");
     }
 
+    @HystrixCommand(fallbackMethod = "getDefaultBooks", groupKey = "BookService", commandKey = "getAll")
     @Override
     public List<Book> getAll() {
         return bookRepository.findAll();
@@ -70,6 +72,11 @@ public class BookServiceImpl implements BookService {
     public void delete(String id) {
         bookRepository.deleteById(id);
     }
+
+    private List<Book> getDefaultBooks() {
+        return List.of(new Book("Любимая книга", new Author("Любимый автор"), new Genre("Любимый жанр")));
+    }
+
 }
 
 
