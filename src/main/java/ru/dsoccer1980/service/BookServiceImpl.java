@@ -31,12 +31,13 @@ public class BookServiceImpl implements BookService {
         bookSaveCounter = registry.counter("services.book.save");
     }
 
-    @HystrixCommand(fallbackMethod = "getDefaultBooks", groupKey = "BookService", commandKey = "getAll")
+    @HystrixCommand(groupKey = "BookService", commandKey = "getAll", fallbackMethod = "getDefaultBooks")
     @Override
     public List<Book> getAll() {
         return bookRepository.findAll();
     }
 
+    @HystrixCommand(groupKey = "BookService", commandKey = "getById")
     @Override
     public Book get(String id) {
         Book book;
@@ -48,6 +49,7 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    @HystrixCommand(groupKey = "BookService", commandKey = "save")
     @Override
     public Book save(Book book, String authorId, String genreId) {
         if (book.getId() == null || book.getId().equals("")) {
@@ -68,6 +70,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
     }
 
+    @HystrixCommand(groupKey = "BookService", commandKey = "delete")
     @Override
     public void delete(String id) {
         bookRepository.deleteById(id);

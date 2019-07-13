@@ -15,17 +15,19 @@ public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
 
-    @HystrixCommand(fallbackMethod = "getDefaultGenres", groupKey = "GenreService", commandKey = "getAll")
+    @HystrixCommand(groupKey = "GenreService", commandKey = "getAll", fallbackMethod = "getDefaultGenres")
     @Override
     public List<Genre> getAll() {
         return genreRepository.findAll();
     }
 
+    @HystrixCommand(groupKey = "GenreService", commandKey = "getById")
     @Override
     public Genre get(String id) {
         return genreRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    @HystrixCommand(groupKey = "GenreService", commandKey = "save")
     @Override
     public Genre save(Genre genre) {
         if (genre.getId() == null || genre.getId().equals("")) {
@@ -34,6 +36,7 @@ public class GenreServiceImpl implements GenreService {
         return genreRepository.save(genre);
     }
 
+    @HystrixCommand(groupKey = "GenreService", commandKey = "delete")
     @Override
     public void delete(String id) {
         genreRepository.deleteById(id);

@@ -15,17 +15,19 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    @HystrixCommand(fallbackMethod = "getDefaultAuthors", groupKey = "AuthorService", commandKey = "getAll")
+    @HystrixCommand(groupKey = "AuthorService", commandKey = "getAll", fallbackMethod = "getDefaultAuthors")
     @Override
     public List<Author> getAll() {
         return authorRepository.findAll();
     }
 
+    @HystrixCommand(groupKey = "AuthorService", commandKey = "getById")
     @Override
     public Author get(String id) {
         return authorRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    @HystrixCommand(groupKey = "AuthorService", commandKey = "save")
     @Override
     public Author save(Author author) {
         if (author.getId() == null || author.getId().equals("")) {
@@ -34,6 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.save(author);
     }
 
+    @HystrixCommand(groupKey = "AuthorService", commandKey = "delete")
     @Override
     public void delete(String id) {
         authorRepository.deleteById(id);
