@@ -20,6 +20,7 @@ import ru.dsoccer1980.service.UserDetailsServiceImpl;
 
 import java.security.Principal;
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 //@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.99.100:3000"})
@@ -45,10 +46,11 @@ public class AuthenticationController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtTokenRequest authenticationRequest)
             throws AuthenticationException {
-
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+
+        if (!((User) userDetails).getRoles().equals(Set.of(Role.ANONYM))) {
+            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        }
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
